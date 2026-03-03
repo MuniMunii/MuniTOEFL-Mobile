@@ -7,5 +7,5 @@ export const authClient=createAuthClient({
         inferAdditionalFields({user:{noTelp:{type:"string"}}}),adminClient(),
         expoClient({scheme:'myapp',storagePrefix:'myapp',storage:SecureStore})
     ],
-    baseURL:"http://localhost:8081/api/auth",
+    baseURL:`${process.env.EXPO_PUBLIC_NGROK??'http://192.168.18.13:3000'}/api/auth`
 })
