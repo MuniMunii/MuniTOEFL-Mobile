@@ -7,6 +7,9 @@
     "orientation": "portrait",
     "icon": "./app/assets/icon.png",
     "userInterfaceStyle": "automatic",
+    "updates":{
+      "enabled":false
+    },
     "newArchEnabled": true,
     "splash": {
       "image": "./app/assets/splash-icon.png",
