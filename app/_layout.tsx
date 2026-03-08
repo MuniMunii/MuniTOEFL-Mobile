@@ -8,6 +8,7 @@ import { TamaguiProvider} from 'tamagui';
 import { useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { authClient } from './lib/authClients';
+import BottomNavbar from './components/navigation/bottomNav';
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -41,9 +42,8 @@ export default function RootLayout() {
   return( 
     <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme ?? "light"}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        <Stack screenOptions={{headerShown:false,presentation:"transparentModal",animation:'slide_from_right',animationDuration:600}}>
+          <Stack.Screen name={'(home)'}/>
         </Stack>
       </ThemeProvider>
     </TamaguiProvider>
