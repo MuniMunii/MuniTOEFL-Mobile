@@ -1,7 +1,6 @@
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Button, Text, View } from "tamagui";
-import LoginListModal from "../components/sheet/Loginmodal";
 // import { Button, Text, View } from "react-native";
 
 export default function HomePages(){

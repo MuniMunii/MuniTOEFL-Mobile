@@ -1,6 +1,6 @@
 import { Text, View } from "tamagui";
-import { authClient } from "../../lib/authClients";
-import SignoutButton from "../../components/button/signout";
+import { authClient } from "../../../lib/authClients";
+import SignoutButton from "../../../components/button/signout";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function ClientDashboard(){

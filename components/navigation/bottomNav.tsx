@@ -23,11 +23,13 @@ export default function BottomNavbar() {
         height={55}
         bg={"black"}
         position="absolute"
-        bottom={inset.bottom}
+        bottom={inset.bottom+12}
         zIndex={100}
         orientation="horizontal"
         overflow="hidden"
-        backgroundColor={"#3B413C"}
+        // backgroundColor={"#3B413C"}
+        border={'2px solid'}
+        borderColor={'$borderColor'}
         borderRadius={30}
       >
         <AnimatePresence>

@@ -2,12 +2,13 @@ import { Redirect, router } from "expo-router";
 import { authClient } from "../../lib/authClients";
 import { Button } from "tamagui";
 import {  useState } from "react";
+import LoginWithCredentials from "./loginWithCredentials";
 export default function GoogleSignIn({
   setOpen,
   fromModal,
 }: {
   setOpen?: any;
-  fromModal?: boolean;
+  fromModal: boolean;
 }) {
   const { data: session } = authClient.useSession.get();
   const [isLoading,setIsLoading]=useState<boolean>(false)
@@ -47,7 +48,7 @@ export default function GoogleSignIn({
     <Button onPress={handleLogin} width={fromModal ? "100%" : "fit"} disabled={isLoading}>
       Login with Google
     </Button>
-    <Button width={"100%"} onPress={()=>{router.navigate('/client/auth/login');setOpen(false)}} disabled={isLoading}>Login with email and password</Button>
+    {fromModal&&<LoginWithCredentials isLoading={isLoading} setOpen={setOpen}/>}
     </>
   );
 }

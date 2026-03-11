@@ -2,24 +2,51 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+import { Platform } from "react-native";
 import 'expo-router/entry';
 import tamaguiConfig from '../tamagui.config'
-import { TamaguiProvider} from 'tamagui';
+import { FontLanguage, TamaguiProvider} from 'tamagui';
 import { useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
-import { authClient } from './lib/authClients';
-import BottomNavbar from './components/navigation/bottomNav';
+import { authClient } from '../lib/authClients';
+import { onlineManager, QueryClientProvider } from '@tanstack/react-query';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
+import * as ExpoDevice from "expo-device";
+import * as Network from 'expo-network';
+import {queryClient} from '../lib/queryClient';
+import { FloatingDevTools } from "@buoy-gg/core";
+import { useSyncQueriesExternal } from "react-query-external-sync";
+onlineManager.setEventListener((setOnline) => {
+  let initialised = false
+  const eventSubscription = Network.addNetworkStateListener((state) => {
+    initialised = true
+    setOnline(!!state.isConnected)
+  })
+  Network.getNetworkStateAsync()
+    .then((state) => {
+      if (!initialised) {
+        setOnline(!!state.isConnected)
+      }
+    })
+    .catch((err) => {
+      // getNetworkStateAsync can reject on some platforms/SDK versions
+      console.log(err)
+    })
+
+  return eventSubscription.remove
+})
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const {data:session,isPending}=authClient.useSession.get()
   const colorScheme=useColorScheme()
   const [loaded] = useFonts({
-    'Outfit-Regular': require('./assets/fonts/outfit/Outfit-Regular.ttf'),
-    'Outfit-Semibold': require('./assets/fonts/outfit/Outfit-SemiBold.ttf'),
-    'Outfit-Bold': require('./assets/fonts/outfit/Outfit-Bold.ttf'),
-    'Outfit-ExtraLight': require('./assets/fonts/outfit/Outfit-ExtraLight.ttf'),
-    'Outfit-Thin': require('./assets/fonts/outfit/Outfit-Thin.ttf'),
+    'Outfit-Regular': require('../assets/fonts/outfit/Outfit-Regular.ttf'),
+    'Outfit-Semibold': require('../assets/fonts/outfit/Outfit-SemiBold.ttf'),
+    'Outfit-Bold': require('../assets/fonts/outfit/Outfit-Bold.ttf'),
+    'Outfit-ExtraLight': require('../assets/fonts/outfit/Outfit-ExtraLight.ttf'),
+    'Outfit-Thin': require('../assets/fonts/outfit/Outfit-Thin.ttf'),
   });
   useEffect(()=>{
     async function fetchSession(){
@@ -35,17 +62,43 @@ export default function RootLayout() {
       SplashScreen.hide();
     }
   }, [loaded]);
-
+  useSyncQueriesExternal({
+    queryClient,
+    socketURL: `${process.env.EXPO_PUBLIC_NGROK}`, // Use local network IP
+    deviceName: Platform?.OS || "web",
+    platform: Platform?.OS || "web",
+    deviceId: Platform?.OS || "web",
+    isDevice: ExpoDevice.isDevice,
+    extraDeviceInfo: {
+      appVersion: "1.0.0",
+    },
+    enableLogs: false,
+    envVariables: {
+      NODE_ENV: process.env.NODE_ENV,
+    },
+    // Storage monitoring
+    asyncStorage: AsyncStorage,
+    secureStorage: SecureStore,
+    secureStorageKeys: ["userToken", "refreshToken"],
+  });
   if (!loaded) {
     return null;
   }
-  return( 
+  return(
+  <>
+    <QueryClientProvider client={queryClient}>
     <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme ?? "light"}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme} >
+        <FontLanguage>
         <Stack screenOptions={{headerShown:false,presentation:"transparentModal",animation:'slide_from_right',animationDuration:600}}>
           <Stack.Screen name={'(home)'}/>
+          <Stack.Screen name={'client'}/>
         </Stack>
+        </FontLanguage>
       </ThemeProvider>
     </TamaguiProvider>
+    </QueryClientProvider>
+    <FloatingDevTools/>
+    </>
 );
 }
