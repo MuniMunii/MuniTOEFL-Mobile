@@ -4,6 +4,7 @@ import { useRouter, useSegments } from "expo-router";
 import { useState } from "react";
 import { authClient } from "../../lib/authClients";
 import LoginListModal from "../sheet/Loginmodal";
+import MenuNavigation from "../menu/menuNavigation";
 export default function BottomNavbar() {
   const { data: session } = authClient.useSession.get();
   const inset = useSafeAreaInsets();
@@ -88,9 +89,6 @@ export default function BottomNavbar() {
               justify={"flex-end"}
               p="8"
             >
-              <Button circular width={14} height={14} bg={"#ff22"}>
-                ...
-              </Button>
             </Tabs.Tab>
           </Tabs.List>
         </AnimatePresence>

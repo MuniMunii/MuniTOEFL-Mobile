@@ -1,10 +1,11 @@
 import { useRouter } from "expo-router";
+import { SetStateAction } from "react";
 import{Button}from"tamagui"
 export default function LoginWithCredentials({
   setOpen,
   isLoading
 }: {
-  setOpen?: any;
+  setOpen: React.Dispatch<SetStateAction<boolean>>;
   isLoading?:boolean;
 }){
     const router=useRouter();

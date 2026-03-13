@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { Platform } from "react-native";
 import 'expo-router/entry';
 import tamaguiConfig from '../tamagui.config'
-import { FontLanguage, TamaguiProvider} from 'tamagui';
+import { FontLanguage, PortalProvider, TamaguiProvider} from 'tamagui';
 import { useColorScheme } from 'react-native';
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { authClient } from '../lib/authClients';
@@ -48,6 +48,8 @@ export default function RootLayout() {
     'Outfit-ExtraLight': require('../assets/fonts/outfit/Outfit-ExtraLight.ttf'),
     'Outfit-Thin': require('../assets/fonts/outfit/Outfit-Thin.ttf'),
   });
+  // Triggering fetch session for first launch
+  // if theres no session go back to /auth/login
   useEffect(()=>{
     async function fetchSession(){
       if(!session){
@@ -88,6 +90,7 @@ export default function RootLayout() {
   <>
     <QueryClientProvider client={queryClient}>
     <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme ?? "light"}>
+      <PortalProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme} >
         <FontLanguage>
         <Stack screenOptions={{headerShown:false,presentation:"transparentModal",animation:'slide_from_right',animationDuration:600}}>
@@ -96,6 +99,7 @@ export default function RootLayout() {
         </Stack>
         </FontLanguage>
       </ThemeProvider>
+      </PortalProvider>
     </TamaguiProvider>
     </QueryClientProvider>
     <FloatingDevTools/>

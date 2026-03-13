@@ -1,24 +1,25 @@
 import { Redirect, router } from "expo-router";
 import { authClient } from "../../lib/authClients";
 import { Button } from "tamagui";
-import {  useState } from "react";
+import {  SetStateAction, useState } from "react";
 import LoginWithCredentials from "./loginWithCredentials";
 export default function GoogleSignIn({
   setOpen,
   fromModal,
 }: {
-  setOpen?: any;
+  setOpen?: React.Dispatch<SetStateAction<boolean>>;
   fromModal: boolean;
 }) {
   const { data: session } = authClient.useSession.get();
   const [isLoading,setIsLoading]=useState<boolean>(false)
+  const closeModal = setOpen ?? (() => {});
   const handleLogin = async () => {
     try{
     if (session) {
       console.log("You are already logged in");
       return;
     }
-    setOpen(false);
+    closeModal(false);
     setIsLoading(true)
     const { error } = await authClient.signIn.social({
       provider: "google",
@@ -48,7 +49,6 @@ export default function GoogleSignIn({
     <Button onPress={handleLogin} width={fromModal ? "100%" : "fit"} disabled={isLoading}>
       Login with Google
     </Button>
-    {fromModal&&<LoginWithCredentials isLoading={isLoading} setOpen={setOpen}/>}
     </>
   );
 }

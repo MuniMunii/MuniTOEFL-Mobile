@@ -10,9 +10,14 @@ import { MessageSquareWarning } from "@tamagui/lucide-icons";
 import { Paragraph } from "tamagui";
 import { H1 } from "tamagui";
 import { H2 } from "tamagui";
+import { LoginType } from "../../../../types/Auth";
 export default function LoginTabs() {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  // const [email, setEmail] = useState<string>("");
+  // const [password, setPassword] = useState<string>("");
+  const [formValue,setFormValue]=useState<LoginType>({
+    email:'',
+    password:""
+  })
   const [error, setError] = useState<{
     isError: boolean;
     message: string | undefined;
@@ -20,25 +25,27 @@ export default function LoginTabs() {
   const router = useRouter();
   const inset = useSafeAreaInsets();
   async function handleSubmit() {
-    try{
-    console.log('hit')
-    await authClient.signIn.email(
-      { email, password },
-      {
-        onSuccess:async ()=>{
-          console.log('login success')
-// const session = await authClient.getSession();
-// console.log(session)
-//         if (session.data?.session) {
-          router.replace('/client/dashboard');
+    try {
+      console.log("hit");
+      await authClient.signIn.email(
+        { email:formValue.email, password:formValue.password },
+        {
+          onSuccess: async () => {
+            setError((prev)=>({...prev, isError: false}))
+          },
+          onError: (err) => {
+            return setError({ isError: true, message: err.error.message });
+          },
         },
-        onError: (err) => {
-          return setError({ isError: !!err, message: err.error.message });
-        },
-      },
-    );
-  }
-    catch(err){console.log(err)}
+      );
+      const client = await authClient.getSession();
+      console.log(client);
+      if (client.data?.session) {
+        router.replace("/client/dashboard/home");
+      }
+    } catch (err) {
+          return setError({ isError: true, message: 'Error getting session, please try again later' });
+    }
   }
   return (
     <YStack
@@ -60,7 +67,7 @@ export default function LoginTabs() {
         gap={6}
       >
         <H2 alignSelf="center">Login</H2>
-        <Theme name={"error"}>
+{ error.isError&&<Theme name={"error"}>
           <XStack
             mb={5}
             bg={"$red3"}
@@ -76,27 +83,29 @@ export default function LoginTabs() {
           >
             <MessageSquareWarning />
             <Paragraph flexShrink={1} textAlign="justify">
-              {error.message ? error.message : "Error, please try again later"}
+              {error.message}
             </Paragraph>
           </XStack>
-        </Theme>
+        </Theme>}
         <View>
           <Form onSubmit={handleSubmit}>
             <InputWithLabel
               placeholder="email@gmail.com"
               label="Email"
-              value={email}
-              setValue={setEmail}
+              field="email"
+              value={formValue.email}
+              setValue={setFormValue}
             />
             <InputWithLabel
               placeholder="*********"
+              field="password"
               label="Password"
-              value={password}
-              setValue={setPassword}
+              value={formValue.password}
+              setValue={setFormValue}
               password={true}
             />
             <Form.Trigger asChild>
-            <Button type="submit">Login</Button>
+              <Button type="submit">Login</Button>
             </Form.Trigger>
           </Form>
         </View>

@@ -2,6 +2,7 @@ import { memo, SetStateAction, useState } from "react";
 import { Button, H2, Paragraph, Sheet, SizableText, YStack } from "tamagui";
 import GoogleSignIn from "../button/googleSignIn";
 import { useRouter } from "expo-router";
+import LoginWithCredentials from "../button/loginWithCredentials";
 const SheetContent = memo(({router,setOpen}:any) => {
   return (
     <>
@@ -13,6 +14,7 @@ const SheetContent = memo(({router,setOpen}:any) => {
         </Paragraph>
       </YStack>
       <GoogleSignIn setOpen={setOpen} fromModal={true}/>
+      <LoginWithCredentials setOpen={setOpen}/>
     </>
   );
 });

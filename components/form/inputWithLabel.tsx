@@ -12,7 +12,12 @@ import {
 } from "tamagui";
 import { Input } from "tamagui";
 import {MessageSquareWarning}from "@tamagui/lucide-icons"
-export default function InputWithLabel({
+import { RegisterType } from "../../types/Auth";
+type FieldError = {
+  errorMsg: string;
+  isError: boolean;
+};
+export default function InputWithLabel<T>({
   value,
   setValue,
   label,
@@ -20,22 +25,22 @@ export default function InputWithLabel({
   focusOnMount = false,
   placeholder='Input here...',
   error,
-  errorMsg,
+  field,
 }: {
-  error?: boolean;
-  errorMsg?: string | undefined;
+  error?: FieldError;
   focusOnMount?: boolean;
   password?: boolean;
   label: string;
   value: string;
+  field:string;
   placeholder:string;
-  setValue: React.Dispatch<SetStateAction<string>>;
+  setValue: React.Dispatch<SetStateAction<T>>;
 }) {
   const [showPassword, setShowPassword] = useState<boolean>(password);
   return (
     <YStack gap={2}>
       <Label fontWeight={"$extraLight"} mb={'$-2'}>{label}</Label>
-      {error&&
+      {error?.isError&&
                   <Theme name={"error"}>
         <XStack
           mb={5}
@@ -52,14 +57,14 @@ export default function InputWithLabel({
         >
             <MessageSquareWarning/>
           <Paragraph flexShrink={1} textAlign="justify">
-            {errorMsg}
+            {error.errorMsg}
           </Paragraph>
         </XStack>
       </Theme>}
       <Input
       placeholderTextColor={'$white06'}
         autoFocus={focusOnMount}
-        onChangeText={setValue}
+        onChangeText={()=>setValue((prev)=>({...prev,[field]:value}))}
         value={value}
         secureTextEntry={showPassword}
         placeholder={placeholder}
