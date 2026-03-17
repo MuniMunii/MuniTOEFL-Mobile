@@ -20,8 +20,8 @@ export const RegisterScheme = z
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    path: ["ConfirmPassword"],
-    error: "Password tidak match",
+    path: ["confirmPassword"],
+    error: "Password is not match",
   });
   export const LoginScheme=z.object({
     email:z.email(),

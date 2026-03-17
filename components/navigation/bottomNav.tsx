@@ -71,7 +71,7 @@ export default function BottomNavbar() {
               value="setting"
               onPress={() => {
                 if (session) {
-                  return router.navigate("/client/dashboard/home");
+                  return router.navigate(session.user.role!=='admin'?"/client/dashboard/home":"/admin/dashboard/home");
                 } else {
                   setOpenLogin(true);
                 }
@@ -89,6 +89,7 @@ export default function BottomNavbar() {
               justify={"flex-end"}
               p="8"
             >
+              <MenuNavigation/>
             </Tabs.Tab>
           </Tabs.List>
         </AnimatePresence>

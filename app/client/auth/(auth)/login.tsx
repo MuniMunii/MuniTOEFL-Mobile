@@ -41,7 +41,10 @@ export default function LoginTabs() {
       const client = await authClient.getSession();
       console.log(client);
       if (client.data?.session) {
+        if(client.data.user.role!=='admin'){
         router.replace("/client/dashboard/home");
+        }
+        router.replace("/admin/dashboard/home")
       }
     } catch (err) {
           return setError({ isError: true, message: 'Error getting session, please try again later' });
