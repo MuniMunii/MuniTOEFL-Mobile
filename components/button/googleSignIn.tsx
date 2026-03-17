@@ -25,7 +25,9 @@ export default function GoogleSignIn({
       provider: "google",
       callbackURL: "/",
       fetchOptions: {
-        headers: { "ngrok-skip-browser-warning": "true" },
+        headers: { "ngrok-skip-browser-warning": "true",
+          "User-Agent":'MuniToefl'
+         },
       },
     });
     if (error) {

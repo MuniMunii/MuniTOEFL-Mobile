@@ -1,6 +1,6 @@
 export const Typograpy={ 
     fontFamily:{
-        regular:'Outfit-Req',
+        regular:'Outfit-Regular',
         Bold:'Outfit-Bold',
         semiBold:'Outfit-SemiBold',
         thin:'Outfit-Thin',

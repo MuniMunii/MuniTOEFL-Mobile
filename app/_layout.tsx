@@ -64,6 +64,7 @@ export default function RootLayout() {
       SplashScreen.hide();
     }
   }, [loaded]);
+  console.log("Fonts loaded:", loaded)
   useSyncQueriesExternal({
     queryClient,
     socketURL: `${process.env.EXPO_PUBLIC_NGROK}`, // Use local network IP
@@ -93,7 +94,7 @@ export default function RootLayout() {
       <PortalProvider>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme} >
         <FontLanguage>
-        <Stack screenOptions={{headerShown:false,presentation:"transparentModal",animation:'slide_from_right',animationDuration:600}}>
+        <Stack screenOptions={{headerShown:false,presentation:"transparentModal",animation:'fade',animationDuration:200}}>
           <Stack.Screen name={'(home)'}/>
           <Stack.Screen name={'client'}/>
         </Stack>
