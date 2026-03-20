@@ -9,9 +9,8 @@ export default function SignoutButton({transparent=false}:{transparent?:boolean}
         if(signOutClient.error){
         console.log(signOutClient.error)
         }
-        if(signOutClient.data){
-            router.replace("/client/auth/login")
-        }
+        console.log(signOutClient)
+            router.push("/")
      }
     return(
         <Button backgroundColor={transparent?'$colorTransparent':'$borderColor'} onPress={handleSignout}>Logout</Button>

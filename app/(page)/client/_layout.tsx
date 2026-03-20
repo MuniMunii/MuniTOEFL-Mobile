@@ -1,13 +1,15 @@
 import { Stack } from "expo-router";
-import { authClient } from "../../lib/authClients";
+import { authClient } from "../../../lib/authClients";
 export default function ClientLayout() {
-  const { data: session, isPending } = authClient.useSession.get();
+  const { data: session } = authClient.useSession.get();
   return (
     <>
       <Stack
         screenOptions={{ presentation: "transparentModal", headerShown: false }}
       >
+        <Stack.Protected guard={!session}>
         <Stack.Screen name="auth/(auth)"></Stack.Screen>
+        </Stack.Protected>
         <Stack.Protected guard={!!session && session.user.role !== "admin"}>
           <Stack.Screen name={"dashboard"} />
         </Stack.Protected>

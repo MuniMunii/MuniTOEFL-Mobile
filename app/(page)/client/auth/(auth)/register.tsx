@@ -1,16 +1,16 @@
 import { useRouter } from "expo-router";
 import { Button, ScrollView, Text, View, XStack, YStack } from "tamagui";
-import GoogleSignIn from "../../../../components/button/googleSignIn";
+import GoogleSignIn from "../../../../../components/button/googleSignIn";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { H2 } from "tamagui";
 import { Theme } from "tamagui";
 import { MessageSquareWarning } from "@tamagui/lucide-icons";
 import { Paragraph } from "tamagui";
 import { Form } from "tamagui";
-import InputWithLabel from "../../../../components/form/inputWithLabel";
-import { authClient } from "../../../../lib/authClients";
+import InputWithLabel from "../../../../../components/form/inputWithLabel";
+import { authClient } from "../../../../../lib/authClients";
 import { useEffect, useState } from "react";
-import { RegisterScheme, RegisterType } from "../../../../types/Auth";
+import { RegisterScheme, RegisterType } from "../../../../../types/Auth";
 type FieldError = {
   errorMsg: string;
   isError: boolean;
@@ -85,12 +85,6 @@ export default function RegisterTabs() {
           },
         },
       );
-      // const client = await authClient.getSession();
-      // console.log(client);
-      // if (client.data?.session) {
-      //   // console.log('hit redirect')
-      //   router.replace("/client/dashboard/home");
-      // }
     } catch (err) {
       console.log(err);
     }
@@ -100,7 +94,7 @@ export default function RegisterTabs() {
   }, [formValue]);
   return (
     <YStack
-      pt={inset.top + 8}
+      pt={8}
       pb={inset.bottom + 12}
       flex={1}
       justify={"center"}

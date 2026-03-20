@@ -1,5 +1,5 @@
 import { Slot } from "expo-router";
-import BottomNavbar from "../../../components/navigation/bottomNav";
+import BottomNavbar from "../../../../components/navigation/bottomNav";
 export default function DashboardLayout(){
     return (
         <>

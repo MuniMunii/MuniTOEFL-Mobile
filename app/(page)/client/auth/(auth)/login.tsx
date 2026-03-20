@@ -1,16 +1,16 @@
 import { Button, Form, Text, Theme, View, XStack, YStack } from "tamagui";
 import { useRouter } from "expo-router";
-import GoogleSignIn from "../../../../components/button/googleSignIn";
+import GoogleSignIn from "../../../../../components/button/googleSignIn";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import InputWithLabel from "../../../../components/form/inputWithLabel";
+import InputWithLabel from "../../../../../components/form/inputWithLabel";
 import { useState } from "react";
-import { authClient } from "../../../../lib/authClients";
+import { authClient } from "../../../../../lib/authClients";
 import { z } from "zod";
 import { MessageSquareWarning } from "@tamagui/lucide-icons";
 import { Paragraph } from "tamagui";
 import { H1 } from "tamagui";
 import { H2 } from "tamagui";
-import { LoginType } from "../../../../types/Auth";
+import { LoginType } from "../../../../../types/Auth";
 export default function LoginTabs() {
   // const [email, setEmail] = useState<string>("");
   // const [password, setPassword] = useState<string>("");

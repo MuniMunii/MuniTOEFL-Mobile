@@ -1,7 +1,5 @@
 import { Stack } from "expo-router";
-import { authClient } from "../../lib/authClients";
-import HeaderClient from "../../components/header/header";
-
+import { authClient } from "../../../lib/authClients";
 export default function ClientLayout() {
   const { data: session } = authClient.useSession.get();
   return (

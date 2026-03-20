@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { Button, H1, Text, View,Paragraph } from "tamagui";
-import { Typograpy } from "../../constant/typography";
+import { Typograpy } from "../../../constant/typography";
 // import { Button, Text, View } from "react-native";
 
 export default function HomePages(){

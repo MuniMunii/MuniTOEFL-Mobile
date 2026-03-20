@@ -1,10 +1,9 @@
 import { Slot, Tabs } from "expo-router";
 import { View } from "tamagui";
-import BottomNavbar from "../../components/navigation/bottomNav";
-import HeaderClient from "../../components/header/header";
+import BottomNavbar from "../../../components/navigation/bottomNav";
+import HeaderClient from "../../../components/header/header";
 export default function HomeLayout(){
     return <>
-    <HeaderClient/>
     <Tabs screenOptions={{headerShown:false,tabBarStyle:{display:'none'}}}>
         <Tabs.Screen name="index"/>
     </Tabs>
