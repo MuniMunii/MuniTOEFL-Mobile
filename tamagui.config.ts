@@ -5,7 +5,7 @@ import {themes} from "./theme"
 export const tamaguiConfig = createTamagui({
   ...defaultConfig,
   themes:themes,
-  settings: { remBaseFontSize: 16 },
+  settings: { remBaseFontSize: 16,defaultFont:'body' },
   fonts:{
     body:createFont({
     family: 'Outfit-Regular',
@@ -32,6 +32,7 @@ export const tamaguiConfig = createTamagui({
     },
   })
   },
+
   animations: createAnimations({
     bouncy: {
       damping: 10,

@@ -7,4 +7,5 @@ export default {
   // optional:
   importsWhitelist: ['constants.js', 'colors.js'],
   disableExtraction: process.env.NODE_ENV === 'development',
+  
 } satisfies TamaguiBuildOptions

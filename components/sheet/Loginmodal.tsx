@@ -1,5 +1,5 @@
 import { memo, SetStateAction, useState } from "react";
-import { Button, H2, Paragraph, Sheet, SizableText, YStack } from "tamagui";
+import { Button, H2, Paragraph, Sheet, SizableText, YStack,Text } from "tamagui";
 import GoogleSignIn from "../button/googleSignIn";
 import { useRouter } from "expo-router";
 import LoginWithCredentials from "../button/loginWithCredentials";
@@ -7,7 +7,7 @@ const SheetContent = memo(({router,setOpen}:any) => {
   return (
     <>
       <YStack gap={"$1"} justify={"center"} items={"center"}>
-        <H2>Start Your Test</H2>
+        <Text>Start Your Test</Text>
         <Paragraph textAlign="center" fontSize={"$2"} color={"$gray11"}>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Dignissimos
           libero, ipsa reprehenderit nostrum atque ad!

@@ -106,7 +106,7 @@ export default function RootLayout() {
             <ThemeProvider
               value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
             >
-              <FontLanguage>
+              <FontLanguage body={'default'}>
               <Drawer
                 screenOptions={{
                   headerShown:true,

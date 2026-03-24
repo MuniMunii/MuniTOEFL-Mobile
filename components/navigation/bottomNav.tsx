@@ -1,4 +1,4 @@
-import { AnimatePresence, Button, SizableText, Tabs } from "tamagui";
+import { AnimatePresence, SizableText, Tabs } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useRouter, useSegments } from "expo-router";
 import { useState } from "react";
