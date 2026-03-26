@@ -26,7 +26,7 @@ export default function MenuDrawer({ navigation }: any) {
     navigation.dispatch({ type: "TOGGLE_DRAWER" });
     router.push(url);
   };
-  function PopoverProfile() {
+  function PopoverProfile({closeDrawer}:{closeDrawer:(url:string)=>void}) {
     return (
       <Popover stayInFrame allowFlip>
         <Popover.Trigger asChild marginLeft={"auto"}>
@@ -35,7 +35,7 @@ export default function MenuDrawer({ navigation }: any) {
         <Popover.Content height={"fit-content"} p={0} px={12}>
           <Popover.Arrow borderWidth={1} borderColor={"$borderColor"} />
           <YStack>
-            <SignoutButton transparent={true} fromDrawer={true}/>
+            <SignoutButton closeDrawer={closeDrawer} transparent={true} fromDrawer={true}/>
           </YStack>
         </Popover.Content>
       </Popover>
@@ -148,7 +148,7 @@ export default function MenuDrawer({ navigation }: any) {
             height={40}
           ></View>
           <SizableText fontSize={"$1"}>{session?.user.name}</SizableText>
-          <PopoverProfile />
+          <PopoverProfile closeDrawer={closeDrawer}/>
         </XStack>
       </YStack>
     </ScrollView>

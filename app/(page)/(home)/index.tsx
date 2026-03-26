@@ -12,6 +12,7 @@ export default function HomePages() {
       <Paragraph style={{ fontFamily: "Outfit-Bold" }}>
         Enjoy learning, and Reach Goal!, {Typograpy.fontFamily.regular}
       </Paragraph>
+      <Button onPress={()=>router.replace('/client/auth/login')}>Login</Button>
     </View>
   );
 }

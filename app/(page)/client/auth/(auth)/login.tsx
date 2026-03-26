@@ -10,8 +10,6 @@ import { Paragraph } from "tamagui";
 import { H2 } from "tamagui";
 import { LoginType } from "../../../../../types/Auth";
 export default function LoginTabs() {
-  // const [email, setEmail] = useState<string>("");
-  // const [password, setPassword] = useState<string>("");
   const [formValue,setFormValue]=useState<LoginType>({
     email:'',
     password:""
@@ -21,12 +19,13 @@ export default function LoginTabs() {
     message: string | undefined;
   }>({ isError: false, message: "" });
   const router = useRouter();
-  const inset = useSafeAreaInsets();
+  const inset = useSafeAreaInsets(); 
   async function handleSubmit() {
     try {
       console.log("hit");
       await authClient.signIn.email(
-        { email:formValue.email, password:formValue.password },
+        // dummy
+        { email:'', password:'' },
         {
           onSuccess: async () => {
             setError((prev)=>({...prev, isError: false}))
@@ -67,7 +66,7 @@ export default function LoginTabs() {
         paddingHorizontal={18}
         gap={6}
       >
-        <H2 alignSelf="center">Login</H2>
+        <Text alignSelf="center">Login</Text>
 { error.isError&&<Theme name={"error"}>
           <XStack
             mb={5}
