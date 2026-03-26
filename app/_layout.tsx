@@ -24,6 +24,7 @@ import { FloatingDevTools } from "@buoy-gg/core";
 import { useSyncQueriesExternal } from "react-query-external-sync";
 import MenuDrawer from "../components/menu/menuDrawer";
 import Drawer from "expo-router/drawer";
+import HeaderClient from "../components/header/header";
 onlineManager.setEventListener((setOnline) => {
   let initialised = false;
   const eventSubscription = Network.addNetworkStateListener((state) => {
@@ -110,11 +111,17 @@ export default function RootLayout() {
               <Drawer
                 screenOptions={{
                   headerShown:true,
+                  // headerTitle:{},
+                  drawerItemStyle:{display:'none'},
                   drawerType:'front',
+                  header:()=><HeaderClient/>
                 }}
                 drawerContent={()=><MenuDrawer navigation={navigate}/>}
               >
-                <Drawer.Screen name="(page)" />
+                <Drawer.Screen name="(page)" options={{
+    title: "Home",
+    drawerLabel: ()=>null,
+  }}/>
               </Drawer>
               </FontLanguage>
             </ThemeProvider>

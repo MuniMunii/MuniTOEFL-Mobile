@@ -19,7 +19,7 @@ const SheetContent = memo(({ setOpen,name,setUsername }: any) => {
   };
   return (
     <>
-      <YStack gap={"$1"} justify={"center"} items={"flex-start"} flexGrow={1} width={'100%'}>
+      <YStack gap={"$3"} justify={"center"} items={"flex-start"} flexGrow={1} width={'100%'}>
         <Text fontSize={"$5"}>Personalize</Text>
         <Paragraph textAlign="center" color={"$gray11"}>
           Change your username here!

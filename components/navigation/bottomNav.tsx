@@ -78,17 +78,6 @@ export default function BottomNavbar() {
             >
               <SizableText fontSize={14}>{session ? "Dashboard" : "Login"}</SizableText>
             </Tabs.Tab>
-            <Tabs.Tab
-              height={"fit-content"}
-              width={"fit-content"}
-              flex={0}
-              bg={"$colorTransparent"}
-              activeStyle={{ backgroundColor: "rgb(160, 0, 27)" }}
-              value="menu"
-              justify={"flex-end"}
-              p="8"
-            >
-            </Tabs.Tab>
           </Tabs.List>
         </AnimatePresence>
       </Tabs>

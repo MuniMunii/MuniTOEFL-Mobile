@@ -1,4 +1,4 @@
-import { useNavigation, useRouter } from "expo-router";
+import { useNavigation, usePathname, useRouter } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
   Button,
@@ -16,17 +16,37 @@ import {
   ScrollView,
 } from "tamagui";
 import { authClient } from "../../lib/authClients";
-import { ChevronDown, Menu } from "@tamagui/lucide-icons";
+import {
+  Book,
+  BookText,
+  ChevronDown,
+  House,
+  Menu,
+  Pen,
+  AudioLines,
+  Mic,
+  Settings,
+  Headset,
+  Newspaper,
+  Monitor,
+} from "@tamagui/lucide-icons";
 import SignoutButton from "../button/signout";
 export default function MenuDrawer({ navigation }: any) {
   const { data: session } = authClient.useSession.get();
   const router = useRouter();
   const inset = useSafeAreaInsets();
+  const pathname = usePathname();
   const closeDrawer = (url: string) => {
     navigation.dispatch({ type: "TOGGLE_DRAWER" });
-    router.push(url);
+    if (pathname !== url) {
+      router.push(url);
+    }
   };
-  function PopoverProfile({closeDrawer}:{closeDrawer:(url:string)=>void}) {
+  function PopoverProfile({
+    closeDrawer,
+  }: {
+    closeDrawer: (url: string) => void;
+  }) {
     return (
       <Popover stayInFrame allowFlip>
         <Popover.Trigger asChild marginLeft={"auto"}>
@@ -35,7 +55,11 @@ export default function MenuDrawer({ navigation }: any) {
         <Popover.Content height={"fit-content"} p={0} px={12}>
           <Popover.Arrow borderWidth={1} borderColor={"$borderColor"} />
           <YStack>
-            <SignoutButton closeDrawer={closeDrawer} transparent={true} fromDrawer={true}/>
+            <SignoutButton
+              closeDrawer={closeDrawer}
+              transparent={true}
+              fromDrawer={true}
+            />
           </YStack>
         </Popover.Content>
       </Popover>
@@ -46,111 +70,206 @@ export default function MenuDrawer({ navigation }: any) {
       flex={1}
       contentContainerStyle={{
         flexGrow: 1,
-        paddingHorizontal: 20,
         paddingTop: inset.top + 8,
         paddingBottom: inset.bottom,
-        gap:10
+        gap: 12,
       }}
     >
-      <Button
-        onPress={() => {
-          closeDrawer("/");
-        }}
+      <View
+        width={"100%"}
+        borderWidth={0}
+        padding={12}
+        borderBottomWidth={1}
+        borderColor={"$borderColor"}
       >
-        <Text>Home</Text>
-      </Button>
-      <Accordion overflow="hidden" width={"100%"} type="single" collapsible>
-        <Accordion.Item value="lesson" mb={-1}>
-          <Accordion.Trigger
-            flexDirection="row"
-            justifyContent="space-between"
-            borderWidth={1}
-          >
-            {({ open }: { open: boolean }) => (
-              <>
-                <Paragraph>Lesson</Paragraph>
-                <Square
-                  transparent
-                  transition="quick"
-                  rotate={open ? "180deg" : "0deg"}
-                >
-                  <ChevronDown size="$1" color="$color" />
-                </Square>
-              </>
-            )}
-          </Accordion.Trigger>
-          <Accordion.HeightAnimator
-            transition="quick"
-            exitStyle={{ opacity: 0 }}
-            borderWidth={1}
-            borderTopWidth={0}
-            borderColor="$borderColor"
-          >
-            <Accordion.Content>
-              <YStack gap={10}>
-                <Button>Writing</Button>
-                <Button>Listening</Button>
-                <Button>Reading</Button>
-                <Button>Speaking</Button>
-              </YStack>
-            </Accordion.Content>
-          </Accordion.HeightAnimator>
-        </Accordion.Item>
-      </Accordion>
-      <Button>Blog</Button>
-      {session?.user.role !== "admin" ? (
-        <>
-          <Button
-            onPress={() => {
-              closeDrawer("/client/dashboard");
-            }}
-            marginBottom={12}
-          >
-            <Text>Dashboard</Text>
-          </Button>
-          <Separator
-            marginBottom={12}
-            borderWidth={1}
-            width={'100%'}
-            borderColor={"$borderColor"}
-          />
-          <YStack gap={10}>
-            <Button>
-              <Text>Setting and Privacy</Text>
-            </Button>
-            <Button>
-              <Text>Help Center</Text>
-            </Button>
-          </YStack>
-        </>
-      ) : (
+        <Text fontSize={"$5"}>MuniToefl</Text>
+      </View>
+      <View flex={1} paddingHorizontal={20} gap={10} alignItems={"flex-start"}>
         <Button
           onPress={() => {
-            closeDrawer("/admin/dashboard");
+            closeDrawer("/");
           }}
+          icon={House}
+          iconSize={32}
+          paddingHorizontal={0}
+          backgroundColor={"$colorTransparent"}
         >
-          <Text>Admin Dashboard</Text>
+          Home
         </Button>
-      )}
-      <YStack
-        marginTop={"auto"}
-        style={{ justifySelf: "flex-end", alignSelf: "flex-end" }}
-        width={"100%"}
-        p={8}
-        gap={6}
-      >
-        <Separator alignSelf="stretch" />
-        <XStack gap={10} flex={1} justifyContent="center">
-          <View
-            rounded={"100%"}
-            backgroundColor={"$accent4"}
-            width={40}
-            height={40}
-          ></View>
-          <SizableText fontSize={"$1"}>{session?.user.name}</SizableText>
-          <PopoverProfile closeDrawer={closeDrawer}/>
-        </XStack>
-      </YStack>
+        <Accordion overflow="hidden" width={"100%"} type="single" collapsible>
+          <Accordion.Item value="lesson" mb={-1}>
+            <Accordion.Trigger
+              flexDirection="row"
+              justifyContent="space-between"
+              backgroundColor={"$colorTransparent"}
+              borderWidth={0}
+              paddingLeft={0}
+              pressStyle={{ backgroundColor: "$colorTransparent" }}
+            >
+              {({ open }: { open: boolean }) => (
+                <>
+                  <View
+                    flex={1}
+                    flexDirection="row"
+                    gap={6}
+                    alignItems="center"
+                  >
+                    <Book size={16} />
+                    <Paragraph>Lesson</Paragraph>
+                  </View>
+                  <Square
+                    transparent
+                    transition="quick"
+                    rotate={open ? "180deg" : "0deg"}
+                  >
+                    <ChevronDown size="$1" color="$color" />
+                  </Square>
+                </>
+              )}
+            </Accordion.Trigger>
+            <Accordion.HeightAnimator
+              transition="quick"
+              exitStyle={{ opacity: 0 }}
+              borderRightWidth={0}
+              borderTopWidth={0}
+              borderLeftWidth={1}
+              borderColor="$borderColor"
+            >
+              <Accordion.Content backgroundColor={"$colorTransparent"}>
+                <YStack gap={10} alignItems="flex-start">
+                  <Button
+                    backgroundColor={"$colorTransparent"}
+                    paddingLeft={0}
+                    borderWidth={0}
+                    borderBottomWidth={1}
+                    borderColor={"$borderColor"}
+                    iconSize={32}
+                    icon={Pen}
+                  >
+                    Writing
+                  </Button>
+                  <Button
+                    backgroundColor={"$colorTransparent"}
+                    paddingLeft={0}
+                    borderWidth={0}
+                    borderBottomWidth={1}
+                    borderColor={"$borderColor"}
+                    iconSize={32}
+                    icon={AudioLines}
+                  >
+                    Listening
+                  </Button>
+                  <Button
+                    backgroundColor={"$colorTransparent"}
+                    paddingLeft={0}
+                    borderWidth={0}
+                    borderBottomWidth={1}
+                    borderColor={"$borderColor"}
+                    iconSize={32}
+                    icon={BookText}
+                  >
+                    Reading
+                  </Button>
+                  <Button
+                    backgroundColor={"$colorTransparent"}
+                    paddingLeft={0}
+                    borderWidth={0}
+                    borderBottomWidth={1}
+                    borderColor={"$borderColor"}
+                    iconSize={32}
+                    icon={Mic}
+                  >
+                    Speaking
+                  </Button>
+                </YStack>
+              </Accordion.Content>
+            </Accordion.HeightAnimator>
+          </Accordion.Item>
+        </Accordion>
+        <Button
+          marginBottom={12}
+          iconSize={32}
+          backgroundColor={"$colorTransparent"}
+          paddingLeft={0}
+          icon={Newspaper}
+        >
+          Blog
+        </Button>
+        {session?.user.role !== "admin" ? (
+          <>
+            <Button
+              onPress={() => {
+                closeDrawer("/client/dashboard");
+              }}
+              marginBottom={12}
+              iconSize={32}
+              backgroundColor={"$colorTransparent"}
+              paddingLeft={0}
+              icon={Monitor}
+            >
+              Dashboard
+            </Button>
+            <Separator
+              marginBottom={12}
+              borderWidth={1}
+              width={"100%"}
+              borderColor={"$borderColor"}
+            />
+            <YStack gap={10} alignItems="flex-start">
+              <Button
+                marginBottom={12}
+                iconSize={32}
+                backgroundColor={"$colorTransparent"}
+                paddingLeft={0}
+                icon={Settings}
+              >
+                Setting and Privacy
+              </Button>
+              <Button
+                marginBottom={12}
+                iconSize={32}
+                backgroundColor={"$colorTransparent"}
+                paddingLeft={0}
+                icon={Headset}
+              >
+                Help center
+              </Button>
+            </YStack>
+          </>
+        ) : (
+          <Button
+            onPress={() => {
+              closeDrawer("/admin/dashboard");
+            }}
+          >
+            <Text>Admin Dashboard</Text>
+          </Button>
+        )}
+        <YStack
+          marginTop={"auto"}
+          style={{ justifySelf: "flex-end", alignSelf: "flex-end" }}
+          width={"100%"}
+          p={8}
+          gap={6}
+        >
+          <Separator alignSelf="stretch" />
+          <XStack gap={10} flex={1} justifyContent="center">
+            <View
+              rounded={"100%"}
+              backgroundColor={"$accent4"}
+              width={40}
+              height={40}
+            ></View>
+            <YStack justifyContent="center">
+              <SizableText fontSize={"$1"}>{session?.user.name}</SizableText>
+              <Text fontSize={"$1"} color={"$white08"}>
+                {session?.user.role !== "admin" ? "Student" : "Admin"}
+              </Text>
+            </YStack>
+            <PopoverProfile closeDrawer={closeDrawer} />
+          </XStack>
+        </YStack>
+      </View>
     </ScrollView>
   );
 }
