@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { Platform } from "react-native";
 import "expo-router/entry";
 import tamaguiConfig from "../tamagui.config";
-import { FontLanguage, PortalProvider, TamaguiProvider } from "tamagui";
+import { FontLanguage, PortalProvider, TamaguiProvider,ToastViewport,ToastProvider,Toast } from "tamagui";
 import { useColorScheme } from "react-native";
 import {
   DarkTheme,
@@ -25,6 +25,7 @@ import { useSyncQueriesExternal } from "react-query-external-sync";
 import MenuDrawer from "../components/menu/menuDrawer";
 import Drawer from "expo-router/drawer";
 import HeaderClient from "../components/header/header";
+import {CurrentToast,SafeToastViewport} from "../components/toast";
 onlineManager.setEventListener((setOnline) => {
   let initialised = false;
   const eventSubscription = Network.addNetworkStateListener((state) => {
@@ -103,7 +104,8 @@ export default function RootLayout() {
           config={tamaguiConfig}
           defaultTheme={colorScheme ?? "light"}
         >
-          <PortalProvider>
+          <ToastProvider>
+                      <PortalProvider>
             <ThemeProvider
               value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
             >
@@ -126,6 +128,9 @@ export default function RootLayout() {
               </FontLanguage>
             </ThemeProvider>
           </PortalProvider>
+          <CurrentToast/>
+          <SafeToastViewport/>
+          </ToastProvider>
         </TamaguiProvider>
       </QueryClientProvider>
       <FloatingDevTools />

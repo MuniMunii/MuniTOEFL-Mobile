@@ -15,10 +15,11 @@ export default function HeaderClient() {
       <View
         mt={inset.top}
         width={"100%"}
-        height={70}
+        height={50}
         backgroundColor={"$background"}
         p={12}
         flexDirection="row"
+        alignItems="center"
       >
         <Button
           icon={Menu}

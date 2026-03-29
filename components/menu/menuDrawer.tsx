@@ -82,7 +82,7 @@ export default function MenuDrawer({ navigation }: any) {
         borderBottomWidth={1}
         borderColor={"$borderColor"}
       >
-        <Text fontSize={"$5"}>MuniToefl</Text>
+        <Text fontSize={"$5"} textTransform="uppercase">MuniToefl</Text>
       </View>
       <View flex={1} paddingHorizontal={20} gap={10} alignItems={"flex-start"}>
         <Button

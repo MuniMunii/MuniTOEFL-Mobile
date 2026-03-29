@@ -1,4 +1,5 @@
 // import { registerRootComponent } from 'expo';
+import '@tamagui/native/setup-burnt'
 import '@tamagui/native/setup-zeego'
 import 'expo-router/entry'
 // import App from './App';
