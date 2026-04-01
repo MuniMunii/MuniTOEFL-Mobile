@@ -20,6 +20,8 @@ export default function HeaderClient() {
         p={12}
         flexDirection="row"
         alignItems="center"
+        borderBottomWidth={1}
+        borderBottomColor={"$white8"}
       >
         <Button
           icon={Menu}

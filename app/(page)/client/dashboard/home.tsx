@@ -7,8 +7,9 @@ import { useEffect, useState } from "react";
 import EditUsername from "../../../../components/sheet/editUsername";
 import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../../../../lib/apiClient";
-import { SkeletonProvider,Skeleton } from "../../../../components/skeleton";
-import {  useRouter } from "expo-router";
+import { SkeletonProvider, Skeleton } from "../../../../components/skeleton";
+import { useRouter } from "expo-router";
+import queryFn from "../../../../utils/queryFn";
 interface ActiveSessionProps {
   title: string;
   titleSug: string;
@@ -16,7 +17,8 @@ interface ActiveSessionProps {
 }
 export default function ClientDashboard() {
   const { data: session } = authClient.useSession.get();
-  const cookies=authClient.getCookie();
+  const router = useRouter();
+  const cookies = authClient.getCookie();
   const [openEditUsername, setOpenEditUsername] = useState<boolean>(false);
   //   for optimistic update after update
   const [username, setUsername] = useState(session?.user.name ?? "User");
@@ -27,18 +29,10 @@ export default function ClientDashboard() {
     isLoading: activeSessionLoading,
   } = useQuery<ActiveSessionProps[]>({
     queryKey: ["all-active-session"],
-    queryFn: async () => {
-      const res = await apiClient.get(
-        `${process.env.EXPO_PUBLIC_NGROK ?? "localhost:3000"}/api/test-attempt/tests/active-session`,
-        {headers:{
-          "Cookie":cookies
-        }}
-      );
-      return res.data.data;
-    },
+    queryFn:()=>queryFn<ActiveSessionProps[]>('/api/test-attempt/tests/active-session',true)
   });
   // Debugging
-// useEffect(()=>{console.log(activeSessionTest)},[activeSessionTest])
+  // useEffect(()=>{console.log(activeSessionTest)},[activeSessionTest])
   return (
     <>
       <EditUsername
@@ -52,7 +46,7 @@ export default function ClientDashboard() {
           paddingBottom: inset.bottom,
           flexGrow: 1,
           flexDirection: "column",
-          gap:12
+          gap: 12,
         }}
       >
         <XStack
@@ -82,39 +76,91 @@ export default function ClientDashboard() {
           />
         </XStack>
         <YStack>
-          <Text 
-          alignSelf="flex-start"
-          borderLeftWidth={3}
-          borderLeftColor={"$accent11"}
-          paddingLeft={12}>Active Session</Text>
+          <Text
+            alignSelf="flex-start"
+            borderLeftWidth={3}
+            borderLeftColor={"$accent11"}
+            paddingLeft={12}
+          >
+            Active Session
+          </Text>
         </YStack>
-                  <YStack gap={10} p={24} alignItems="center" justifyContent="center" backgroundColor={'$background'} width={'95%'} alignSelf="center" borderRadius={14}>
-                    <XStack width={'100%'} p={8} backgroundColor={'$accent9'} borderRadius={10}>
-                      <YStack gap={4}>
-                      <Text>Listening</Text>
-                      <Text></Text>
-                      </YStack>
-                      <Button onPress={()=>console.log(cookies)}>Continue</Button>
-                    </XStack>
-          {/* {activeSessionLoading ? (
+        <YStack
+          gap={10}
+          p={24}
+          alignItems="center"
+          justifyContent="center"
+          backgroundColor={"$background"}
+          width={"95%"}
+          alignSelf="center"
+          borderRadius={14}
+        >
+          {activeSessionLoading ? (
             <SkeletonProvider>
-            <Skeleton height={30}/>
-            <Skeleton height={30}/>
-            <Skeleton height={30}/>
+              <Skeleton height={30} />
+              <Skeleton height={30} />
+              <Skeleton height={30} />
             </SkeletonProvider>
           ) : activeSessionError ? (
-                        <Text fontSize={'$4'} fontWeight={'$semiBold'} textTransform="uppercase" color={'$red10'}>Error</Text>
-            <XCircle color={'$red10'}/>
-            <Text fontSize={'$2'} color={'$white6'}>{activeSessionError?activeSessionError?.message:'Fetching failed, please try again later'}</Text>
+            <YStack alignItems="center" gap={8}>
+              <Text
+                fontSize="$4"
+                fontWeight="$semiBold"
+                textTransform="uppercase"
+                color="$red10"
+              >
+                Error
+              </Text>
+
+              <XCircle color="$red10" />
+
+              <Text fontSize="$2" color="$white6">
+                {activeSessionError?.message ??
+                  "Fetching failed, please try again later"}
+              </Text>
+            </YStack>
           ) : activeSessionTest?.length !== 0 ? (
-            <View></View>
+            <XStack
+              width="100%"
+              justifyContent="space-between"
+              alignItems="center"
+              p={8}
+              backgroundColor="$accent9"
+              borderRadius={10}
+            >
+              <YStack gap={4} flex={1} flexShrink={1}>
+                <Text>Listening</Text>
+                <Text fontSize="$1" color="$white3">
+                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                  Ipsum, id!
+                </Text>
+              </YStack>
+
+              <Button onPress={() => console.log(cookies)}>Continue</Button>
+            </XStack>
           ) : (
-                        <Text fontSize={'$4'} fontWeight={'$semiBold'} textTransform="uppercase" color={'$white'}>Empty</Text>
-            <BookX color={'$white'}/>
-            <Text fontSize={'$2'} color={'$white6'}>You dont have any active session, Go take a lesson</Text>
-            <Button icon={Book} onPress={()=>router.navigate("/lesson")}>Lesson</Button>
-          )} */}
-                    </YStack>
+            <YStack alignItems="center" gap={8}>
+              <Text
+                fontSize="$4"
+                fontWeight="$semiBold"
+                textTransform="uppercase"
+                color="$white"
+              >
+                Empty
+              </Text>
+
+              <BookX color="$white" />
+
+              <Text fontSize="$2" color="$white6">
+                You dont have any active session, Go take a lesson
+              </Text>
+
+              <Button icon={Book} onPress={() => router.navigate("/lesson")}>
+                Lesson
+              </Button>
+            </YStack>
+          )}
+        </YStack>
         <YStack gap={16}>
           <Text
             borderLeftWidth={3}

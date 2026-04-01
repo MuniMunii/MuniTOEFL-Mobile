@@ -56,6 +56,7 @@ export default function BottomNavbar() {
               backgroundColor={"$colorTransparent"}
               activeStyle={{ backgroundColor: "rgb(160, 0, 27)" }}
               value="lesson"
+              onPress={()=>router.navigate('/lesson')}
             >
               <SizableText fontSize={14}>Lesson</SizableText>
             </Tabs.Tab>
