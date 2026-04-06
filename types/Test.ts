@@ -1,5 +1,6 @@
 import {z} from 'zod'
 export const metaTestDataScheme=z.object({
+    _id:z.string(),
     type:z.enum(['listening','reading','speaking','writing'],'type does not exist'),
     titleSlug:z.string(),
     title:z.string().min(8,'Must be atleast 8 characters').max(20,'No more than 20 characters'),

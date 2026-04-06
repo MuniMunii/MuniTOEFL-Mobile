@@ -1,11 +1,18 @@
 import { useFonts } from "expo-font";
-import { useNavigationContainerRef } from "expo-router";
+import { Stack, useNavigationContainerRef } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { Platform } from "react-native";
 import "expo-router/entry";
 import tamaguiConfig from "../tamagui.config";
-import { FontLanguage, PortalProvider, TamaguiProvider,ToastViewport,ToastProvider,Toast } from "tamagui";
+import {
+  FontLanguage,
+  PortalProvider,
+  TamaguiProvider,
+  ToastViewport,
+  ToastProvider,
+  Toast,
+} from "tamagui";
 import { useColorScheme } from "react-native";
 import {
   DarkTheme,
@@ -25,7 +32,7 @@ import { useSyncQueriesExternal } from "react-query-external-sync";
 import MenuDrawer from "../components/menu/menuDrawer";
 import Drawer from "expo-router/drawer";
 import HeaderClient from "../components/header/header";
-import {CurrentToast,SafeToastViewport} from "../components/toast";
+import { CurrentToast, SafeToastViewport } from "../components/toast";
 onlineManager.setEventListener((setOnline) => {
   let initialised = false;
   const eventSubscription = Network.addNetworkStateListener((state) => {
@@ -50,7 +57,7 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const { data: session, isPending } = authClient.useSession.get();
   const colorScheme = useColorScheme();
-  const navigate=useNavigationContainerRef()
+  const navigate = useNavigationContainerRef();
   const [loaded] = useFonts({
     "Outfit-Regular": require("../assets/fonts/outfit/Outfit-Regular.ttf"),
     "Outfit-Semibold": require("../assets/fonts/outfit/Outfit-SemiBold.ttf"),
@@ -94,6 +101,7 @@ export default function RootLayout() {
     secureStorage: SecureStore,
     secureStorageKeys: ["userToken", "refreshToken"],
   });
+  const Header = React.memo(HeaderClient);
   if (!loaded) {
     return null;
   }
@@ -105,31 +113,37 @@ export default function RootLayout() {
           defaultTheme={colorScheme ?? "light"}
         >
           <ToastProvider>
-                      <PortalProvider>
-            <ThemeProvider
-              value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-            >
-              <FontLanguage body={'default'}>
-              <Drawer
-                screenOptions={{
-                  headerShown:true,
-                  // headerTitle:{},
-                  drawerItemStyle:{display:'none'},
-                  drawerType:'front',
-                  header:()=><HeaderClient/>
-                }}
-                drawerContent={()=><MenuDrawer navigation={navigate}/>}
+            <PortalProvider>
+              <ThemeProvider
+                value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
               >
-                <Drawer.Screen name="(page)" options={{
-    title: "Home",
-    drawerLabel: ()=>null,
-  }}/>
-              </Drawer>
-              </FontLanguage>
-            </ThemeProvider>
-          </PortalProvider>
-          <CurrentToast/>
-          <SafeToastViewport/>
+                <FontLanguage body={"default"}>
+                  <Drawer
+                    screenOptions={{
+                      headerShown: true,
+                      // headerTitle:{},
+                      drawerItemStyle: { display: "none" },
+                      drawerType: "front",
+                      header: () => <Header />,
+                    }}
+                    drawerContent={() => <MenuDrawer navigation={navigate} />}
+                  >
+                    <Drawer.Screen
+                      name="(page)"
+                      options={{
+                        title: "Home",
+                        drawerLabel: () => null,
+                      }}
+                    />
+                  </Drawer>
+                  {/* <Stack screenOptions={{headerShown:false,animation:'slide_from_left',animationDuration:500}}>
+                <Stack.Screen name={'(page)'}/>
+              </Stack> */}
+                </FontLanguage>
+              </ThemeProvider>
+            </PortalProvider>
+            <CurrentToast />
+            <SafeToastViewport />
           </ToastProvider>
         </TamaguiProvider>
       </QueryClientProvider>

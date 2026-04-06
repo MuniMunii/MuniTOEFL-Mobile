@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect } from "react"
+import { StyleProp, ViewStyle } from "react-native"
 import Animated, { useAnimatedStyle, useSharedValue, withRepeat, withTiming,SharedValue } from "react-native-reanimated"
 import { View } from "tamagui"
 const AnimatedView = Animated.createAnimatedComponent(View)
@@ -28,18 +29,18 @@ export function useSkeleton(): SharedValue<number> {
   return ctx
 }
 
-export function Skeleton({height=35,width='100%'}:{height?:number,width?:number|string}) {
+export function Skeleton({height=35,width='100%',styleList}:{height?:number,width?:number|string,styleList?:StyleProp<ViewStyle>}) {
   const opacity = useSkeleton()
-
-  const style = useAnimatedStyle(() => ({
+  const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value
   }))
 
   return (
     <AnimatedView
-      style={style}
+      style={[animatedStyle,styleList]}
       height={height}
       width={width}
+      
       backgroundColor={'$gray6'}
       borderRadius={12}
     />

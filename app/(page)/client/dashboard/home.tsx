@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "../../../../lib/apiClient";
 import { SkeletonProvider, Skeleton } from "../../../../components/skeleton";
 import { useRouter } from "expo-router";
-import queryFn from "../../../../utils/queryFn";
+import queryFn, { DataProps } from "../../../../utils/queryFn";
 interface ActiveSessionProps {
   title: string;
   titleSug: string;
@@ -27,7 +27,7 @@ export default function ClientDashboard() {
     data: activeSessionTest,
     error: activeSessionError,
     isLoading: activeSessionLoading,
-  } = useQuery<ActiveSessionProps[]>({
+  } = useQuery<DataProps<ActiveSessionProps[]>>({
     queryKey: ["all-active-session"],
     queryFn:()=>queryFn<ActiveSessionProps[]>('/api/test-attempt/tests/active-session',true)
   });
@@ -119,7 +119,7 @@ export default function ClientDashboard() {
                   "Fetching failed, please try again later"}
               </Text>
             </YStack>
-          ) : activeSessionTest?.length !== 0 ? (
+          ) : activeSessionTest?.data.length !== 0 ? (
             <XStack
               width="100%"
               justifyContent="space-between"

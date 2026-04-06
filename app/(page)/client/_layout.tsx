@@ -5,7 +5,7 @@ export default function ClientLayout() {
   return (
     <>
       <Stack
-        screenOptions={{ presentation: "transparentModal", headerShown: false }}
+        screenOptions={{ presentation: "transparentModal",headerShown:false,animation:'slide_from_left',animationDuration:200}}
       >
         <Stack.Protected guard={!!!session}>
           <Stack.Screen name={"auth/(auth)"} />
