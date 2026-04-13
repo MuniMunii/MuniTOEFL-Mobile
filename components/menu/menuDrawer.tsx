@@ -138,6 +138,7 @@ export default function MenuDrawer({ navigation }: any) {
               <Accordion.Content backgroundColor={"$colorTransparent"}>
                 <YStack gap={10} alignItems="flex-start">
                   <Button
+                  onPress={()=>router.navigate('/lesson?type=writing')}
                     backgroundColor={"$colorTransparent"}
                     paddingLeft={0}
                     borderWidth={0}
@@ -149,6 +150,7 @@ export default function MenuDrawer({ navigation }: any) {
                     Writing
                   </Button>
                   <Button
+                  onPress={()=>router.navigate('/lesson?type=listening')}
                     backgroundColor={"$colorTransparent"}
                     paddingLeft={0}
                     borderWidth={0}
@@ -160,6 +162,7 @@ export default function MenuDrawer({ navigation }: any) {
                     Listening
                   </Button>
                   <Button
+                  onPress={()=>router.navigate('/lesson?type=reading')}
                     backgroundColor={"$colorTransparent"}
                     paddingLeft={0}
                     borderWidth={0}
@@ -171,6 +174,7 @@ export default function MenuDrawer({ navigation }: any) {
                     Reading
                   </Button>
                   <Button
+                  onPress={()=>router.navigate('/lesson?type=speaking')}
                     backgroundColor={"$colorTransparent"}
                     paddingLeft={0}
                     borderWidth={0}

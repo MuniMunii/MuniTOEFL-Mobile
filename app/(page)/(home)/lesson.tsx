@@ -7,12 +7,14 @@ import { MetaTestDataInterface } from "../../../types/Test";
 import { FlatList } from "react-native-gesture-handler";
 import { Skeleton, SkeletonProvider } from "../../../components/skeleton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 export default function LessonTab() {
-  const [type, setType] = useState<
-    "writing" | "listening" | "reading" | "speaking"
-  >("writing");
+  const {type}=useLocalSearchParams<{type:"writing" | "listening" | "reading" | "speaking"}>()
+  // const [type, setType] = useState<
+  //   "writing" | "listening" | "reading" | "speaking"
+  // >("writing");
+  const currentType=type??'writing'
   const [allData, setAllData] = useState<MetaTestDataInterface[]>([]);
   const inset = useSafeAreaInsets();
   const router=useRouter()
@@ -24,10 +26,10 @@ export default function LessonTab() {
     fetchNextPage,
     hasNextPage,
   } = useInfiniteQuery<DataProps<MetaTestDataInterface>>({
-    queryKey: ["metatest", type],
+    queryKey: ["metatest", currentType],
     queryFn: ({ pageParam = 1 }) =>
       queryFn(
-        `/api/test/metadata/published?type=${type}&page=${pageParam}`,
+        `/api/test/metadata/published?type=${currentType}&page=${pageParam}`,
         false,
       ),
     getNextPageParam: (lastPage, pages) => {
@@ -109,7 +111,7 @@ export default function LessonTab() {
                     {item.isFree ? "Free" : "Exclusive Content"}
                   </Text>
                 </YStack>
-                <Button onPress={()=>router.navigate(`/client/test/confirmation/${item._id}`)}>Start Lesson</Button>
+                <Button onPress={()=>router.push({pathname:`/client/test/confirmation/[testId]`,params:{testId:item._id,type:item.type}})}>Start Lesson</Button>
               </XStack>
             </YStack>
           </>
@@ -133,10 +135,10 @@ export default function LessonTab() {
             contentContainerStyle={{ gap: 12, paddingHorizontal: 12 }}
             showsHorizontalScrollIndicator={false}
           >
-            <Button onPress={() => setType("writing")}>Writing</Button>
-            <Button onPress={() => setType("listening")}>Listening</Button>
-            <Button onPress={() => setType("reading")}>Reading</Button>
-            <Button onPress={() => setType("speaking")}>Speaking</Button>
+            <Button onPress={() => router.replace({pathname:"/lesson",params:{type:"writing"}})}>Writing</Button>
+            <Button onPress={() => router.replace({pathname:"/lesson",params:{type:"listening"}})}>Listening</Button>
+            <Button onPress={() => router.replace({pathname:"/lesson",params:{type:"reading"}})}>Reading</Button>
+            <Button onPress={() => router.replace({pathname:"/lesson",params:{type:"speaking"}})}>Speaking</Button>
           </ScrollView>
         </>
       }
