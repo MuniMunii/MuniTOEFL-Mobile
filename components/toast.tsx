@@ -20,9 +20,9 @@ export const CurrentToast = () => {
       maxWidth={'350px'}
       width={'90%'}
     >
-      <YStack>
-        <Toast.Title fontWeight={"$semiBold"} color={toast.customData?.type==='error'?'$red10':'$green10'}>{toast.title}</Toast.Title>
-        <Toast.Description>{toast.message}</Toast.Description>
+      <YStack alignItems="flex-start" justifyContent="center">
+        <Toast.Title fontWeight={"$semiBold"} fontSize={'$3'} color={toast.customData?.type==='error'?'$red10':'$green10'}>{toast.title}</Toast.Title>
+        {toast.message&&<Toast.Description>{toast.message}</Toast.Description>}
       </YStack>
       <Toast.Close asChild>
         <Button icon={X} p={10} iconSize={24} size={30} borderRadius={10}/>

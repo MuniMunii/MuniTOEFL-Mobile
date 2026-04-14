@@ -1,21 +1,31 @@
-import { Text, Button, YStack, XStack, ScrollView, View } from "tamagui";
+import {
+  Text,
+  Button,
+  YStack,
+  XStack,
+  ScrollView,
+  View,
+  Input,
+  useToastController,
+} from "tamagui";
 import { authClient } from "../../../../lib/authClients";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import GraphProgress from "../../../../components/card/client/graphProgress";
 import { Book, BookX, Pen, XCircle } from "@tamagui/lucide-icons";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import EditUsername from "../../../../components/sheet/editUsername";
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "../../../../lib/apiClient";
 import { SkeletonProvider, Skeleton } from "../../../../components/skeleton";
 import { useRouter } from "expo-router";
 import queryFn, { DataProps } from "../../../../utils/queryFn";
+import ActivatedVoucher from "../../../../components/card/client/activatedVoucher";
 interface ActiveSessionProps {
   title: string;
   titleSug: string;
   type: "in_progress" | "expired" | "submitted";
 }
 export default function ClientDashboard() {
+
   const { data: session } = authClient.useSession.get();
   const router = useRouter();
   const cookies = authClient.getCookie();
@@ -29,7 +39,11 @@ export default function ClientDashboard() {
     isLoading: activeSessionLoading,
   } = useQuery<DataProps<ActiveSessionProps[]>>({
     queryKey: ["all-active-session"],
-    queryFn:()=>queryFn<ActiveSessionProps[]>('/api/test-attempt/tests/active-session',true)
+    queryFn: () =>
+      queryFn<ActiveSessionProps[]>(
+        "/api/test-attempt/tests/active-session",
+        true,
+      ),
   });
   // Debugging
   // useEffect(()=>{console.log(activeSessionTest)},[activeSessionTest])
@@ -178,6 +192,7 @@ export default function ClientDashboard() {
             <GraphProgress type="listening" />
           </XStack>
         </YStack>
+        <ActivatedVoucher/>
       </ScrollView>
     </>
   );

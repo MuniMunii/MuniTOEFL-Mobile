@@ -8,16 +8,50 @@ import { FlatList } from "react-native-gesture-handler";
 import { Skeleton, SkeletonProvider } from "../../../components/skeleton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { authClient } from "../../../lib/authClients";
+import { ResponseProps } from "../../../types/Response";
+import { VoucherType } from "../../../types/Voucher";
 
 export default function LessonTab() {
-  const {type}=useLocalSearchParams<{type:"writing" | "listening" | "reading" | "speaking"}>()
-  // const [type, setType] = useState<
-  //   "writing" | "listening" | "reading" | "speaking"
-  // >("writing");
-  const currentType=type??'writing'
+  const { type } = useLocalSearchParams<{
+    type: "writing" | "listening" | "reading" | "speaking";
+  }>();
+  const currentType = type ?? "writing";
   const [allData, setAllData] = useState<MetaTestDataInterface[]>([]);
   const inset = useSafeAreaInsets();
-  const router=useRouter()
+  const router = useRouter();
+  const userCookie = authClient.getCookie();
+  const {
+    data: activeVoucher,
+    isError: activeVoucherError,
+    error,
+    isLoading: isActiveVoucherLoading,
+  } = useQuery({
+    queryKey: ["active-voucher"],
+    queryFn:async () =>{
+      try {
+    const res = await apiClient.get('/api/voucher/active-vouchers', {
+      headers: { Cookie: userCookie }
+    });
+    return res.data as ResponseProps<VoucherType[]>;
+  } catch (err: any) {
+    console.log("AXIOS ERROR:", err.response?.data);
+    if (err.response?.status === 404) {
+      return {
+        data: [],
+        message: err.response.data.message,
+        success: false,
+        error:err.response.data.message
+      } as ResponseProps<VoucherType[]>;
+    }
+    throw err;
+  }
+    },
+  });
+  useEffect(
+    () => {console.log("activeVoucher:", activeVoucher?.data);console.log('errorVoucher',error)},
+    [activeVoucher,activeVoucherError],
+  );
   const {
     data: metaTest,
     isFetchingNextPage,
@@ -63,8 +97,9 @@ export default function LessonTab() {
       keyExtractor={(item, i) => item.titleSlug + i}
       style={{ marginTop: 12 }}
       contentContainerStyle={{ gap: 12, paddingBottom: inset.bottom + 80 }}
-      renderItem={({ item }) =>
-        isFetching ? (
+      renderItem={({ item }) =>{
+          const voucherIsActive =Array.isArray(activeVoucher?.data)?activeVoucher?.data?.some((v) => v.typeV === item.type):false;
+        return isFetching ? (
           <YStack
             gap={8}
             width={"95%"}
@@ -111,11 +146,22 @@ export default function LessonTab() {
                     {item.isFree ? "Free" : "Exclusive Content"}
                   </Text>
                 </YStack>
-                <Button onPress={()=>router.push({pathname:`/client/test/confirmation/[testId]`,params:{testId:item._id,type:item.type}})}>Start Lesson</Button>
+                <Button
+                disabled={!voucherIsActive}
+                  onPress={() =>{
+                    if(!voucherIsActive)return
+                    router.push({
+                      pathname: `/client/test/confirmation/[testId]`,
+                      params: { testId: item._id, type: item.type },
+                    })}
+                  }
+                >
+                  Start Lesson
+                </Button>
               </XStack>
             </YStack>
           </>
-        )
+        )}
       }
       onEndReached={() => {
         if (hasNextPage) fetchNextPage();
@@ -135,10 +181,46 @@ export default function LessonTab() {
             contentContainerStyle={{ gap: 12, paddingHorizontal: 12 }}
             showsHorizontalScrollIndicator={false}
           >
-            <Button onPress={() => router.replace({pathname:"/lesson",params:{type:"writing"}})}>Writing</Button>
-            <Button onPress={() => router.replace({pathname:"/lesson",params:{type:"listening"}})}>Listening</Button>
-            <Button onPress={() => router.replace({pathname:"/lesson",params:{type:"reading"}})}>Reading</Button>
-            <Button onPress={() => router.replace({pathname:"/lesson",params:{type:"speaking"}})}>Speaking</Button>
+            <Button
+              onPress={() =>
+                router.replace({
+                  pathname: "/lesson",
+                  params: { type: "writing" },
+                })
+              }
+            >
+              Writing
+            </Button>
+            <Button
+              onPress={() =>
+                router.replace({
+                  pathname: "/lesson",
+                  params: { type: "listening" },
+                })
+              }
+            >
+              Listening
+            </Button>
+            <Button
+              onPress={() =>
+                router.replace({
+                  pathname: "/lesson",
+                  params: { type: "reading" },
+                })
+              }
+            >
+              Reading
+            </Button>
+            <Button
+              onPress={() =>
+                router.replace({
+                  pathname: "/lesson",
+                  params: { type: "speaking" },
+                })
+              }
+            >
+              Speaking
+            </Button>
           </ScrollView>
         </>
       }
