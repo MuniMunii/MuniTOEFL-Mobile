@@ -38,6 +38,7 @@ export default function MenuDrawer({ navigation }: any) {
   const pathname = usePathname();
   const closeDrawer = (url: string) => {
     navigation.dispatch({ type: "TOGGLE_DRAWER" });
+    console.log('drawer: ',url)
     if (pathname !== url) {
       router.push(url);
     }
@@ -203,7 +204,7 @@ export default function MenuDrawer({ navigation }: any) {
           <>
             <Button
               onPress={() => {
-                closeDrawer("/client/dashboard");
+                closeDrawer("/client/dashboard/home");
               }}
               marginBottom={12}
               iconSize={32}

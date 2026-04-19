@@ -1,5 +1,6 @@
 import { YStack, Text, View } from "tamagui";
 import { PieChart } from "react-native-gifted-charts";
+import { TypeTest } from "../../../types/Test";
 const pieData = [
   {
     value: 70,
@@ -16,7 +17,7 @@ export default function GraphProgress({
 }: {
     // adding props later
     data?:any[],
-  type: "writing" | "listening" | "speaking" | "reading";
+  type: TypeTest;
 }) {
   return (
     <YStack

@@ -12,20 +12,24 @@ import { authClient } from "../../../../lib/authClients";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import GraphProgress from "../../../../components/card/client/graphProgress";
 import { Book, BookX, Pen, XCircle } from "@tamagui/lucide-icons";
-import {  useState } from "react";
+import {  useEffect, useState } from "react";
 import EditUsername from "../../../../components/sheet/editUsername";
 import { useQuery } from "@tanstack/react-query";
 import { SkeletonProvider, Skeleton } from "../../../../components/skeleton";
 import { useRouter } from "expo-router";
 import queryFn, { DataProps } from "../../../../utils/queryFn";
 import ActivatedVoucher from "../../../../components/card/client/activatedVoucher";
+import { TypeTest } from "../../../../types/Test";
+import { apiClient } from "../../../../lib/apiClient";
 interface ActiveSessionProps {
   title: string;
   titleSug: string;
-  type: "in_progress" | "expired" | "submitted";
+  status: "in_progress" | "expired" | "submitted";
+  type:TypeTest;
+  testId:string;
+  _id:string;
 }
 export default function ClientDashboard() {
-
   const { data: session } = authClient.useSession.get();
   const router = useRouter();
   const cookies = authClient.getCookie();
@@ -33,20 +37,25 @@ export default function ClientDashboard() {
   //   for optimistic update after update
   const [username, setUsername] = useState(session?.user.name ?? "User");
   const inset = useSafeAreaInsets();
+  const userCookies=authClient.getCookie()
   const {
     data: activeSessionTest,
     error: activeSessionError,
     isLoading: activeSessionLoading,
-  } = useQuery<DataProps<ActiveSessionProps[]>>({
+  } = useQuery({
     queryKey: ["all-active-session"],
-    queryFn: () =>
-      queryFn<ActiveSessionProps[]>(
-        "/api/test-attempt/tests/active-session",
-        true,
-      ),
+    queryFn: async () =>{
+      try{
+      const res=await apiClient.get("/api/test-attempt/tests/active-session",{headers:{Cookie:userCookies}})
+      return res.data.data as ActiveSessionProps[]
+      }catch(err:any){
+        console.log(err.response.data)
+        if(err.response.statusCode===204){return console.log('not found')}
+      }
+    }
   });
   // Debugging
-  // useEffect(()=>{console.log(activeSessionTest)},[activeSessionTest])
+  useEffect(()=>{console.log(activeSessionTest)},[activeSessionTest])
   return (
     <>
       <EditUsername
@@ -56,6 +65,7 @@ export default function ClientDashboard() {
       />
       <ScrollView
         flex={1}
+        backgroundColor={'black'}
         contentContainerStyle={{
           paddingBottom: inset.bottom,
           flexGrow: 1,
@@ -125,16 +135,14 @@ export default function ClientDashboard() {
               >
                 Error
               </Text>
-
               <XCircle color="$red10" />
-
               <Text fontSize="$2" color="$white6">
                 {activeSessionError?.message ??
                   "Fetching failed, please try again later"}
               </Text>
             </YStack>
-          ) : activeSessionTest?.data.length !== 0 ? (
-            <XStack
+          ) : Array.isArray(activeSessionTest) ? activeSessionTest?.map((test)=>{return (<XStack
+          key={test._id}
               width="100%"
               justifyContent="space-between"
               alignItems="center"
@@ -149,10 +157,9 @@ export default function ClientDashboard() {
                   Ipsum, id!
                 </Text>
               </YStack>
-
-              <Button onPress={() => console.log(cookies)}>Continue</Button>
-            </XStack>
-          ) : (
+              <Button onPress={() => router.navigate({pathname:`/client/test/session/[type]/[testId]`,params:{type:test.type,testId:test.testId}})}>Continue</Button>
+            </XStack>)})
+           : (
             <YStack alignItems="center" gap={8}>
               <Text
                 fontSize="$4"
@@ -169,7 +176,7 @@ export default function ClientDashboard() {
                 You dont have any active session, Go take a lesson
               </Text>
 
-              <Button icon={Book} onPress={() => router.navigate("/lesson")}>
+              <Button icon={Book} onPress={() => router.navigate({pathname:"/lesson",params:{type:'writing'}})}>
                 Lesson
               </Button>
             </YStack>

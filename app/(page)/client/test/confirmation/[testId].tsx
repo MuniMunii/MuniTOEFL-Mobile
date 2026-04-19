@@ -1,19 +1,21 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Drawer from "expo-router/drawer";
 import { useEffect } from "react";
 import { Button, Text, useToastController, View, YStack } from "tamagui";
 import { apiClient } from "../../../../../lib/apiClient";
 import { authClient } from "../../../../../lib/authClients";
+import { TypeTest } from "../../../../../types/Test";
 
 export default function ConfirmationTestPage() {
   const param = useLocalSearchParams<{
     testId: string;
-    type: "writing" | "listening" | "reading" | "speaking";
+    type: TypeTest;
   }>();
   const router = useRouter();
   const toast = useToastController();
   const userCookie = authClient.getCookie();
+  const queryClient=useQueryClient()
   const { data: isSessionActive } = useQuery<{
     success: boolean;
     message: string;
@@ -43,9 +45,11 @@ export default function ConfirmationTestPage() {
     onError: (err) => {
       console.log(err);
       toast.show(err.message, { message: err.name });
+      return
     },
     onSuccess: () => {
-      router.navigate(`/client/test/${param.testId}`);
+      queryClient.invalidateQueries({queryKey:['all-active-session']})
+      router.navigate({pathname:`/client/test/session/[type]/[testId]`,params:{type:param.type,testId:param.testId}});
     },
   });
   useEffect(() => console.log(param.testId, param.type), [param]);

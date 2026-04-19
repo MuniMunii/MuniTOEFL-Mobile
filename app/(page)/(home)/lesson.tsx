@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 import { ScrollView, Text, Button, YStack, Paragraph, XStack } from "tamagui";
 import { apiClient } from "../../../lib/apiClient";
 import queryFn, { DataProps } from "../../../utils/queryFn";
-import { MetaTestDataInterface } from "../../../types/Test";
+import { MetaTestDataInterface, TypeTest } from "../../../types/Test";
 import { FlatList } from "react-native-gesture-handler";
 import { Skeleton, SkeletonProvider } from "../../../components/skeleton";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -14,7 +14,7 @@ import { VoucherType } from "../../../types/Voucher";
 
 export default function LessonTab() {
   const { type } = useLocalSearchParams<{
-    type: "writing" | "listening" | "reading" | "speaking";
+    type: TypeTest;
   }>();
   const currentType = type ?? "writing";
   const [allData, setAllData] = useState<MetaTestDataInterface[]>([]);

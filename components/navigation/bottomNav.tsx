@@ -1,6 +1,6 @@
 import { AnimatePresence, SizableText, Tabs } from "tamagui";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useRouter, useSegments } from "expo-router";
+import { usePathname, useRouter, useSegments } from "expo-router";
 import { useState } from "react";
 import { authClient } from "../../lib/authClients";
 import LoginListModal from "../sheet/Loginmodal";
@@ -12,6 +12,11 @@ export default function BottomNavbar() {
   const activeTab = segments[segments.length - 1];
   const [section, setSection] = useState("home");
   const [openLogin, setOpenLogin] = useState<boolean>(false);
+    const pathname = usePathname();
+    const target =
+  session?session.user.role !== "admin"
+    ? "/client/dashboard/home"
+    : "/admin/dashboard/home":'/'
   return (
     <>
       <LoginListModal open={openLogin} setOpen={setOpenLogin} />
@@ -71,7 +76,8 @@ export default function BottomNavbar() {
               value="setting"
               onPress={() => {
                 if (session) {
-                  return router.navigate(session.user.role!=='admin'?"/client/dashboard/home":"/admin/dashboard/home");
+                  console.log(target)
+                  if (pathname !== target) {return router.navigate(target);}
                 } else {
                   setOpenLogin(true);
                 }
