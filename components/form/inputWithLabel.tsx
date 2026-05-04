@@ -65,7 +65,6 @@ export default function InputWithLabel<T>({
       placeholderTextColor={'$white06'}
         autoFocus={focusOnMount}
         onChangeText={(text)=>{
-        console.log(`${field}:${text}`);
         setValue((prev)=>({...prev,[field]:text}))}}
         value={value}
         secureTextEntry={showPassword}

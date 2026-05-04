@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AnswerChoicesTestType, JSONContent } from "../../../types/Test";
+import { AnswerChoicesTestType,TipTapNode } from "../../../types/Test";
 import { apiClient } from "../../../lib/apiClient";
 import { authClient } from "../../../lib/authClients";
 import { useRouter } from "expo-router";
@@ -7,7 +7,7 @@ import { Text, useToastController, View } from "tamagui";
 import { ScrollView } from "tamagui";
 import { renderNode } from "../../../utils/renderNode";
 
-function isJSONContent(value: unknown): value is JSONContent {
+function isJSONContent(value: unknown): value is TipTapNode {
   return typeof value === "object" && value !== null && "type" in value;
 }
 // addmin more props for cache selected choice UI

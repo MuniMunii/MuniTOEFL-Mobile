@@ -110,7 +110,7 @@ export default function RegisterTabs() {
           paddingHorizontal={18}
           gap={6}
         >
-          <H2 alignSelf="center">Register</H2>
+          <Text alignSelf="center">Register</Text>
           {errorFetch.isError && (
             <Theme name={"error"}>
               <XStack

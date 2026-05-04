@@ -60,8 +60,6 @@ const savedAnswerOrder = useMemo(() => {
     );
   }, [quizOrder, savedAnswer]);
   function handleOrder(num: number) {
-    const parseNum = num.toString();
-    localStorage.setItem("order", parseNum);
     setOrder(num);
   }
   if (isLoading) {

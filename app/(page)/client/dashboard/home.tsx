@@ -17,7 +17,6 @@ import EditUsername from "../../../../components/sheet/editUsername";
 import { useQuery } from "@tanstack/react-query";
 import { SkeletonProvider, Skeleton } from "../../../../components/skeleton";
 import { useRouter } from "expo-router";
-import queryFn, { DataProps } from "../../../../utils/queryFn";
 import ActivatedVoucher from "../../../../components/card/client/activatedVoucher";
 import { TypeTest } from "../../../../types/Test";
 import { apiClient } from "../../../../lib/apiClient";

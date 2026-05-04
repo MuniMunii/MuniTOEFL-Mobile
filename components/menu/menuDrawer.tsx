@@ -257,6 +257,8 @@ export default function MenuDrawer({ navigation }: any) {
           p={8}
           gap={6}
         >
+          {!!session?.session&&(
+            <>
           <Separator alignSelf="stretch" />
           <XStack gap={10} flex={1} justifyContent="center">
             <View
@@ -273,6 +275,7 @@ export default function MenuDrawer({ navigation }: any) {
             </YStack>
             <PopoverProfile closeDrawer={closeDrawer} />
           </XStack>
+        </>)}
         </YStack>
       </View>
     </ScrollView>

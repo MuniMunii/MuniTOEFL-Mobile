@@ -1,43 +1,41 @@
 import {z} from 'zod'
-export type JSONContent = {
-    /**
-     * The type of the node
-     */
-    type?: string;
-    /**
-     * The attributes of the node. Attributes can have any JSON-serializable value.
-     */
-    attrs?: Record<string, any> | undefined;
-    /**
-     * The children of the node. A node can have other nodes as children.
-     */
-    content?: JSONContent[];
-    /**
-     * A list of marks of the node. Inline nodes can have marks.
-     */
-    marks?: {
-        /**
-         * The type of the mark
-         */
-        type: string;
-        /**
-         * The attributes of the mark. Attributes can have any JSON-serializable value.
-         */
-        attrs?: Record<string, any>;
-        [key: string]: any;
-    }[];
-    /**
-     * The text content of the node. This property is only present on text nodes
-     * (i.e. nodes with `type: 'text'`).
-     *
-     * Text nodes cannot have children, but they can have marks.
-     */
-    text?: string;
-    [key: string]: any;
-};
-type HTMLContent = string;
-export type Content = HTMLContent | JSONContent | JSONContent[] | null;
-const ContentDesc:z.ZodType<Content>=z.any()
+// 1. The Marks (Inline styles)
+const MarkSchema = z.object({
+  type: z.string(),
+  attrs: z.record(z.string(),z.any()).optional(),
+});
+// 2. The recursive Node schema
+export const JSONContentSchema: z.ZodType<any> = z.lazy(() =>
+  z.discriminatedUnion("type", [
+    z.object({
+      type: z.literal("text"),
+      text: z.string().optional(),
+      marks: z.array(MarkSchema).optional(),
+    }),
+    z.object({
+      type: z.literal("heading"),
+      attrs: z.object({
+        level: z.number().min(1).max(6),
+        textAlign: z.string().nullable().optional(), // Added from your backend
+      }),
+      content: z.array(JSONContentSchema).optional(),
+    }),
+    z.object({
+      type: z.literal("paragraph"),
+      attrs: z.object({
+        textAlign: z.string().nullable().optional(),
+      }).optional(),
+      content: z.array(JSONContentSchema).optional(),
+    }),
+    z.object({
+      type: z.literal("doc"),
+      content: z.array(JSONContentSchema),
+    }),
+  ])
+);
+export type TipTapNode = z.infer<typeof JSONContentSchema>;
+// Use this for your questionScheme
+export const ContentDesc = JSONContentSchema;
 export const metaTestDataScheme=z.object({
     _id:z.string(),
     type:z.enum(['listening','reading','speaking','writing'],'type does not exist'),

@@ -20,12 +20,11 @@ export default function LoginTabs() {
   }>({ isError: false, message: "" });
   const router = useRouter();
   const inset = useSafeAreaInsets(); 
-  async function handleSubmit() {
+  async function handleSubmit({email,password}:LoginType) {
     try {
-      console.log("hit");
       await authClient.signIn.email(
         // dummy
-        { email:'', password:'' },
+        { email:email, password:password },
         {
           onSuccess: async () => {
             setError((prev)=>({...prev, isError: false}))
@@ -36,7 +35,6 @@ export default function LoginTabs() {
         },
       );
       const client = await authClient.getSession();
-      console.log(client);
       if (client.data?.session) {
         if(client.data.user.role!=='admin'){
         router.replace("/client/dashboard/home");
@@ -88,7 +86,7 @@ export default function LoginTabs() {
           </XStack>
         </Theme>}
         <View>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={()=>handleSubmit({email:formValue.email,password:formValue.password})}>
             <InputWithLabel
               placeholder="email@gmail.com"
               label="Email"
