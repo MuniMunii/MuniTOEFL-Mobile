@@ -16,7 +16,7 @@ export const JSONContentSchema: z.ZodType<any> = z.lazy(() =>
       type: z.literal("heading"),
       attrs: z.object({
         level: z.number().min(1).max(6),
-        textAlign: z.string().nullable().optional(), // Added from your backend
+        textAlign: z.string().nullable().optional(),
       }),
       content: z.array(JSONContentSchema).optional(),
     }),
@@ -25,7 +25,7 @@ export const JSONContentSchema: z.ZodType<any> = z.lazy(() =>
       attrs: z.object({
         textAlign: z.string().nullable().optional(),
       }).optional(),
-      content: z.array(JSONContentSchema).optional(),
+      content: z.array(JSONContentSchema).optional().default([]),
     }),
     z.object({
       type: z.literal("doc"),

@@ -46,13 +46,16 @@ export default function TestSessionPage() {
     queryFn: async () => {
       const res = await apiClient.get(
         `/api/test-attempt/tests/${param.testId}/active-session`,
+        {headers:{Cookie:userCookie}}
       );
       return res.data.data as SavedAnswerType;
     },
   });
   useEffect(() => console.log(param), [param]);
   useEffect(() => {console.log(test,'error: ',error)}, [test,error]);
+  useEffect(()=>console.log(JSON.stringify(savedAnswer,null,2)),[savedAnswer])
   const quizOrder=useMemo(()=>{return test?.find(v=>v.order===order)},[test,order])
+  const lastQuestion=quizOrder?.order===test?.length
 const savedAnswerOrder = useMemo(() => {
     if (!savedAnswer) return;
     return savedAnswer.answers.find((c) =>
@@ -60,6 +63,7 @@ const savedAnswerOrder = useMemo(() => {
     );
   }, [quizOrder, savedAnswer]);
   function handleOrder(num: number) {
+
     setOrder(num);
   }
   if (isLoading) {
@@ -70,9 +74,9 @@ if (!quizOrder) {
 }
   return (
     <ScrollView backgroundColor={"black"}>
-    <Quiz handleOrder={handleOrder} lastQuestion={quizOrder?.order===test?.length} question={quizOrder} savedAnswer={savedAnswerOrder?.choiceId} param={{testId:param.testId,type:param.type}}/>
-      <XStack gap={2}>
-      {test?.map((v)=>{return <Button key={v._id} onPress={()=>handleOrder(v.order)}>{v.order+1}</Button>})}
+    <Quiz handleOrder={handleOrder} lastQuestion={lastQuestion} question={quizOrder} savedAnswer={savedAnswerOrder?.choiceId} param={{testId:param.testId,type:param.type}}/>
+      <XStack gap={2} flexWrap="wrap" width={'90%'} mt={12}>
+      {test?.map((v)=>{return <Button key={v._id} onPress={()=>handleOrder(v.order)}>{`${v.order}`}</Button>})}
       </XStack>
     </ScrollView>
   );
