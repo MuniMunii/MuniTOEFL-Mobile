@@ -1,18 +1,9 @@
-import {
-  Text,
-  Button,
-  YStack,
-  XStack,
-  ScrollView,
-  View,
-  Input,
-  useToastController,
-} from "tamagui";
+import { Text, Button, YStack, XStack, ScrollView } from "tamagui";
 import { authClient } from "../../../../lib/authClients";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import GraphProgress from "../../../../components/card/client/graphProgress";
 import { Book, BookX, Pen, XCircle } from "@tamagui/lucide-icons";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import EditUsername from "../../../../components/sheet/editUsername";
 import { useQuery } from "@tanstack/react-query";
 import { SkeletonProvider, Skeleton } from "../../../../components/skeleton";
@@ -24,9 +15,9 @@ interface ActiveSessionProps {
   title: string;
   titleSug: string;
   status: "in_progress" | "expired" | "submitted";
-  type:TypeTest;
-  testId:string;
-  _id:string;
+  type: TypeTest;
+  testId: string;
+  _id: string;
 }
 export default function ClientDashboard() {
   const { data: session } = authClient.useSession.get();
@@ -36,25 +27,32 @@ export default function ClientDashboard() {
   //   for optimistic update after update
   const [username, setUsername] = useState(session?.user.name ?? "User");
   const inset = useSafeAreaInsets();
-  const userCookies=authClient.getCookie()
+  const userCookies = authClient.getCookie();
   const {
     data: activeSessionTest,
     error: activeSessionError,
     isLoading: activeSessionLoading,
   } = useQuery({
     queryKey: ["all-active-session"],
-    queryFn: async () =>{
-      try{
-      const res=await apiClient.get("/api/test-attempt/tests/active-session",{headers:{Cookie:userCookies}})
-      return res.data.data as ActiveSessionProps[]
-      }catch(err:any){
-        console.log(err.response.data)
-        if(err.response.statusCode===204){return console.log('not found')}
+    queryFn: async () => {
+      try {
+        const res = await apiClient.get(
+          "/api/test-attempt/test/active-session",
+          { headers: { Cookie: userCookies } },
+        );
+        return res.data.data as ActiveSessionProps[];
+      } catch (err: any) {
+        console.log(err.response.data);
+        if (err.response.statusCode === 204) {
+          return console.log("not found");
+        }
       }
-    }
+    },
   });
   // Debugging
-  useEffect(()=>{console.log(activeSessionTest)},[activeSessionTest])
+  useEffect(() => {
+    console.log(activeSessionTest);
+  }, [activeSessionTest]);
   return (
     <>
       <EditUsername
@@ -64,7 +62,7 @@ export default function ClientDashboard() {
       />
       <ScrollView
         flex={1}
-        backgroundColor={'black'}
+        backgroundColor={"black"}
         contentContainerStyle={{
           paddingBottom: inset.bottom,
           flexGrow: 1,
@@ -140,25 +138,39 @@ export default function ClientDashboard() {
                   "Fetching failed, please try again later"}
               </Text>
             </YStack>
-          ) : Array.isArray(activeSessionTest) ? activeSessionTest?.map((test)=>{return (<XStack
-          key={test._id}
-              width="100%"
-              justifyContent="space-between"
-              alignItems="center"
-              p={8}
-              backgroundColor="$accent9"
-              borderRadius={10}
-            >
-              <YStack gap={4} flex={1} flexShrink={1}>
-                <Text>Listening</Text>
-                <Text fontSize="$1" color="$white3">
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                  Ipsum, id!
-                </Text>
-              </YStack>
-              <Button onPress={() => router.navigate({pathname:`/client/test/session/[type]/[testId]`,params:{type:test.type,testId:test.testId}})}>Continue</Button>
-            </XStack>)})
-           : (
+          ) : Array.isArray(activeSessionTest) ? (
+            activeSessionTest?.map((test) => {
+              return (
+                <XStack
+                  key={test._id}
+                  width="100%"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  p={8}
+                  backgroundColor="$accent9"
+                  borderRadius={10}
+                >
+                  <YStack gap={4} flex={1} flexShrink={1}>
+                    <Text>Listening</Text>
+                    <Text fontSize="$1" color="$white3">
+                      Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                      Ipsum, id!
+                    </Text>
+                  </YStack>
+                  <Button
+                    onPress={() =>
+                      router.navigate({
+                        pathname: `/client/test/session/[type]/[testId]`,
+                        params: { type: test.type, testId: test.testId },
+                      })
+                    }
+                  >
+                    Continue
+                  </Button>
+                </XStack>
+              );
+            })
+          ) : (
             <YStack alignItems="center" gap={8}>
               <Text
                 fontSize="$4"
@@ -168,14 +180,19 @@ export default function ClientDashboard() {
               >
                 Empty
               </Text>
-
               <BookX color="$white" />
-
               <Text fontSize="$2" color="$white6">
                 You dont have any active session, Go take a lesson
               </Text>
-
-              <Button icon={Book} onPress={() => router.navigate({pathname:"/lesson",params:{type:'writing'}})}>
+              <Button
+                icon={Book}
+                onPress={() =>
+                  router.navigate({
+                    pathname: "/lesson",
+                    params: { type: "writing" },
+                  })
+                }
+              >
                 Lesson
               </Button>
             </YStack>
@@ -198,7 +215,7 @@ export default function ClientDashboard() {
             <GraphProgress type="listening" />
           </XStack>
         </YStack>
-        <ActivatedVoucher/>
+        <ActivatedVoucher />
       </ScrollView>
     </>
   );
