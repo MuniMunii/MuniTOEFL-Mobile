@@ -4,21 +4,29 @@ import { TypeTest } from "../../../types/Test";
 const pieData = [
   {
     value: 70,
-    color: "#177AD5",
+    color: "#cc2a2a",
   },
   {
     value: 30,
     color: "lightgray",
   },
 ];
-export default function GraphProgress({
+export default function GraphProgress<T>({
   type,
-  data,
+  x,
+  y,
+  limit
 }: {
     // adding props later
-    data?:any[],
-  type: TypeTest;
+  x?:number;
+  y?:number;
+  limit?:number;
+  type?: TypeTest|'result';
 }) {
+  if(!x||!y||!limit){
+    return
+  }
+  const pieDataTest=[{value:x,color: "#cc2a2a",},{value:y,color:"#2acc32"}]
   return (
     <YStack
       flexGrow={1}
@@ -54,14 +62,14 @@ export default function GraphProgress({
           donut
           radius={60}
           innerRadius={30}
-          data={pieData}
+          data={pieDataTest}
           centerLabelComponent={() => {
             return (
               <Text
                 fontWeight={"$bold"}
                 style={{ fontSize: 24, color: "#000000ab" }}
               >
-                {Math.max(...pieData.map((v) => v.value))}
+                {Math.max(...pieDataTest.map((v) => v.value))}
               </Text>
             );
           }}
@@ -73,7 +81,7 @@ export default function GraphProgress({
         fontSize={"$1"}
         color={"$white06"}
       >
-        0/69
+        {`${y}/${x}`}
       </Text>
     </YStack>
   );

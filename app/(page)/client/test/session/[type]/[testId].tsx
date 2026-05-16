@@ -12,6 +12,7 @@ import {
 import { useToastController } from "tamagui";
 import Quiz from "../../../../../../components/fragment/client/Quiz";
 import { isAxiosError } from "axios";
+import useOnFetchError from "../../../../../../hooks/useOnFetchError";
 type OptimisticUI = AnswerChoicesTestType & {
   selectedChoiceId: string | null;
   _id: string | null;
@@ -71,6 +72,8 @@ export default function TestSessionPage() {
       return { question: mergedQuestion, savedAnswer: rawSavedAnswer };
     },
   });
+  // handle Error on use Query
+    useOnFetchError({error,isError})
     const submitMutate = useMutation({
       mutationKey: ["submit-test", param.testId],
       mutationFn: async ({ testId }: { testId: string }) => {
@@ -91,35 +94,6 @@ export default function TestSessionPage() {
       }
       submitMutate.mutate({testId:param.testId})
     }
-  useEffect(() => {
-    if (isError && error) {
-      if (isAxiosError(error)) {
-        const status = error.response?.status;
-        if (status === 403) {
-          toastController.show("Forbidden", {
-            message: error.response?.data.message ?? "Test Invalid",
-            customData: { type: "error" },
-          });
-          router.navigate("/client/dashboard/home");
-        }
-        if (status === 401) {
-          toastController.show("Unauthorized", {
-            message: error.response?.data.message,
-            customData: { type: "error" },
-          });
-          router.navigate("/client/dashboard/home");
-        }
-        if (status === 400) {
-          toastController.show("Bad Request", {
-            message:
-              error.response?.data.message ?? "Bad Request/Invalid TestId",
-            customData: { type: "error" },
-          });
-          router.navigate("/client/dashboard/home");
-        }
-      }
-    }
-  }, [isError, error]);
   const quizOrder = useMemo(() => {
     return Question?.question?.find((v) => v.order === order);
   }, [Question?.question, order]);

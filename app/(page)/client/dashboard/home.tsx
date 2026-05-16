@@ -11,6 +11,7 @@ import { useRouter } from "expo-router";
 import ActivatedVoucher from "../../../../components/card/client/activatedVoucher";
 import { TypeTest } from "../../../../types/Test";
 import { apiClient } from "../../../../lib/apiClient";
+import { View } from "tamagui";
 interface ActiveSessionProps {
   title: string;
   titleSug: string;
@@ -19,15 +20,27 @@ interface ActiveSessionProps {
   testId: string;
   _id: string;
 }
+interface ResultsCollectionProps {
+  _id: string;
+  status: "in_progress" | "expired" | "submitted";
+  userId: string;
+  testId: string;
+  submittedAt: Date;
+  expiredAt: Date;
+  expiresAt: Date;
+}
 export default function ClientDashboard() {
   const { data: session } = authClient.useSession.get();
+    const [pageHistory,setPageHistory]=useState<number>(1)
+const [attemptHistoryState,setAttemptHistory]=useState<ResultsCollectionProps[]>([])
+
   const router = useRouter();
   const cookies = authClient.getCookie();
   const [openEditUsername, setOpenEditUsername] = useState<boolean>(false);
   //   for optimistic update after update
   const [username, setUsername] = useState(session?.user.name ?? "User");
   const inset = useSafeAreaInsets();
-  const userCookies = authClient.getCookie();
+  const userCookie = authClient.getCookie();
   const {
     data: activeSessionTest,
     error: activeSessionError,
@@ -38,7 +51,7 @@ export default function ClientDashboard() {
       try {
         const res = await apiClient.get(
           "/api/test-attempt/test/active-session",
-          { headers: { Cookie: userCookies } },
+          { headers: { Cookie: userCookie } },
         );
         return res.data.data as ActiveSessionProps[];
       } catch (err: any) {
@@ -49,10 +62,36 @@ export default function ClientDashboard() {
       }
     },
   });
+  // Bug page query is not working and duplicating the previous data
+  const {
+    data: historyAttempt,
+    isError,
+    error,
+  } = useQuery<ResultsCollectionProps[]>({
+    queryKey: ["history-attempt-test"],
+    queryFn: async () => {
+      const res = await apiClient.get(`/api/test-attempt/results?page=${pageHistory}`, {
+        headers: { Cookie: userCookie },
+      });
+      return res.data.data as ResultsCollectionProps[];
+    },
+  });
   // Debugging
   useEffect(() => {
     console.log(activeSessionTest);
   }, [activeSessionTest]);
+useEffect(() => {
+  if (!historyAttempt) return;
+  
+  if (pageHistory === 1) {
+    // If it's the first pageHistory (or a fresh reload), just overwrite the list
+    setAttemptHistory(historyAttempt);
+  } else {
+    // If it's pageHistory 2+, append it to the bottom
+    setAttemptHistory((prev) => [...prev, ...historyAttempt]);
+  }
+  console.log(pageHistory)
+}, [historyAttempt, pageHistory]);
   return (
     <>
       <EditUsername
@@ -207,15 +246,31 @@ export default function ClientDashboard() {
             Statistic
           </Text>
           <XStack gap={16}>
-            <GraphProgress type="writing" />
-            <GraphProgress type="reading" />
+            <GraphProgress x={10} y={20} limit={20} type="writing" />
+            <GraphProgress x={10} y={20} limit={20} type="reading" />
           </XStack>
           <XStack gap={16}>
-            <GraphProgress type="speaking" />
-            <GraphProgress type="listening" />
+            <GraphProgress x={10} y={20} limit={20} type="speaking" />
+            <GraphProgress x={10} y={20} limit={20} type="listening" />
           </XStack>
         </YStack>
         <ActivatedVoucher />
+        <View>
+          <Button onPress={()=>setPageHistory((prev)=>prev+1)}>page</Button>
+          {Array.isArray(attemptHistoryState)&&attemptHistoryState.map((attempt, i) => (
+            <Button
+              key={attempt._id+i}
+              onPress={() =>
+                router.push({
+                  pathname: "/client/test/result/[attemptId]",
+                  params: { attemptId: attempt._id },
+                })
+              }
+            >
+              {attempt._id + attempt.status}
+            </Button>
+          ))}
+        </View>
       </ScrollView>
     </>
   );
